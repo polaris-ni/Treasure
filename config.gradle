@@ -1,0 +1,18 @@
+ext {
+    android = [compileSdkVersion: 32,
+               applicationId    : "com.lyni.treasure",
+               minSdkVersion    : 21,
+               targetSdkVersion : 32,
+               versionCode      : gitVersionCode(),
+               versionName      : "1." + getVersionName() + "-alpha"]
+}
+
+static def gitVersionCode() {
+    def cmd = 'git rev-list HEAD --count'
+    return cmd.execute().text.trim().toInteger()
+}
+
+static def getVersionName() {
+    def vc = gitVersionCode()
+    return (vc / 10).toInteger() + "." + (vc % 10)
+}
