@@ -3,6 +3,7 @@
 package com.lyni.treasure.lib.common.ktx
 
 import com.lyni.treasure.lib.common.utils.GsonUtil
+import kotlin.reflect.KClass
 
 /**
  * @date 2022/3/28
@@ -14,6 +15,8 @@ import com.lyni.treasure.lib.common.utils.GsonUtil
  * @return 深拷贝对象
  */
 inline fun <reified T : Any> T.deepCopy(): T = this.toJsonStr().jsonToObject(T::class.java)
+
+fun <T : Any> T.deepCopy(clz: KClass<T>): T = this.toJsonStr().jsonToObject(clz.java)
 
 /**
  * 将对象转成json格式
