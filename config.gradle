@@ -1,7 +1,7 @@
 ext {
     android = [compileSdkVersion: 32,
                applicationId    : "com.lyni.treasure",
-               minSdkVersion    : 21,
+               minSdkVersion    : 23,
                targetSdkVersion : 32,
                versionCode      : gitVersionCode(),
                versionName      : "1." + getVersionName() + "-alpha"]
