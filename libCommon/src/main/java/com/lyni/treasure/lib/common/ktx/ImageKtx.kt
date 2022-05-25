@@ -18,14 +18,14 @@ import java.io.*
  * @author Liangyong Ni
  * description BitmapKtx
  */
+private const val TAG = "ImageExt"
+
 /**
  * bitmap转为base64
  * @param quality 压缩质量
  * @param format 图片格式
  * @return base64字符串
  */
-private const val TAG = "ImageExt"
-
 fun Bitmap.toBase64OrNull(quality: Int = 100, format: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG): String? {
     var result: String? = null
     var outputStream: ByteArrayOutputStream? = null

@@ -3,6 +3,8 @@
 package com.lyni.treasure.lib.common.utils
 
 import android.widget.Toast
+import com.lyni.treasure.lib.common.ktx.isMainThread
+import com.lyni.treasure.lib.common.ktx.mainLaunch
 
 /**
  * @date 2022/3/5
@@ -10,11 +12,22 @@ import android.widget.Toast
  * description toast组件
  */
 object ToastUtil {
-    fun showToast(msg: String?) {
-        Toast.makeText(Utils.getAppContext(), msg, Toast.LENGTH_SHORT).show()
-    }
-
-    fun showLongToast(msg: String?) {
-        Toast.makeText(Utils.getAppContext(), msg, Toast.LENGTH_LONG).show()
+    /**
+     * 显示一个Toast
+     * @param msg 内容
+     * @param isLong 是否显示较长时间
+     */
+    fun showToast(msg: String?, isLong: Boolean = false) {
+        if (isMainThread()) {
+            Toast.makeText(Utils.getAppContext(), msg, if (isLong) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
+        } else {
+            mainLaunch {
+                Toast.makeText(Utils.getAppContext(), msg, if (isLong) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
+
+fun showToast(msg: String?) = ToastUtil.showToast(msg)
+
+fun showLongToast(msg: String?) = ToastUtil.showToast(msg, true)
