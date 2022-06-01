@@ -4,7 +4,12 @@ package com.lyni.treasure.lib.common.ktx
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.icu.text.Collator
+import android.icu.util.ULocale
+import android.net.Uri
 import android.util.Base64
+import java.io.File
+import java.util.*
 
 /**
  * @date 2022/3/4
@@ -44,4 +49,45 @@ fun String?.toBooleanOrDefault(default: Boolean = false) = this?.toBooleanStrict
 fun String.toBitmap(): Bitmap {
     val bytes: ByteArray = Base64.decode(this, Base64.DEFAULT)
     return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+}
+
+fun String?.isAbsUrl() =
+    this?.let {
+        it.startsWith("http://", true) || it.startsWith("https://", true)
+    } ?: false
+
+fun String?.safeTrim() = if (this.isNullOrBlank()) null else this.trim()
+
+fun String?.isContentScheme(): Boolean = this?.startsWith("content://") == true
+
+fun String.parseToUri(): Uri {
+    return if (isContentScheme()) {
+        Uri.parse(this)
+    } else {
+        Uri.fromFile(File(this))
+    }
+}
+
+fun String.cnCompare(other: String): Int {
+    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        Collator.getInstance(ULocale.SIMPLIFIED_CHINESE).compare(this, other)
+    } else {
+        java.text.Collator.getInstance(Locale.CHINA).compare(this, other)
+    }
+}
+
+/**
+ * 将字符串拆分为单个字符,包含emoji
+ */
+fun String.toStringArray(): Array<String> {
+    var codePointIndex = 0
+    return try {
+        Array(codePointCount(0, length)) {
+            val start = codePointIndex
+            codePointIndex = offsetByCodePoints(start, 1)
+            substring(start, codePointIndex)
+        }
+    } catch (e: Exception) {
+        split("").toTypedArray()
+    }
 }

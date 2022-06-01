@@ -10,7 +10,13 @@ import android.util.Log
  * description Log 非Debug不打印
  */
 object Log {
-    private var isDebug = true
+    private var isDebug = false
+
+    fun openDebug() {
+        isDebug = true
+    }
+
+    fun isDebug() = isDebug
 
     fun e(tag: String, msg: String) {
         if (isDebug) {

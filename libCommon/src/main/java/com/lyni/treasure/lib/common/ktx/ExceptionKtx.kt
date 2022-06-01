@@ -1,6 +1,6 @@
 package com.lyni.treasure.lib.common.ktx
 
-import com.lyni.treasure.lib.common.BuildConfig
+import com.lyni.treasure.lib.common.utils.Log
 
 /**
  * @date 2022/5/25
@@ -8,7 +8,7 @@ import com.lyni.treasure.lib.common.BuildConfig
  * description ExceptionKtx
  */
 fun Throwable.printOnDebug() {
-    if (BuildConfig.DEBUG) {
+    if (Log.isDebug()) {
         printStackTrace()
     }
 }

@@ -17,7 +17,7 @@ dependencies {
     // gson
     compileOnly 'com.google.code.gson:gson:2.9.0'
 
-    compileOnly "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+    compileOnly "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
     compileOnly 'androidx.core:core-ktx:1.7.0'
     compileOnly 'androidx.appcompat:appcompat:1.4.1'
     compileOnly 'com.google.android.material:material:1.6.0'
@@ -31,7 +31,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.lyni.treasure'
                 artifactId = 'treasure'
-                version = '1.0.0-alpha3'
+                version = '1.0.0-alpha4'
             }
         }
     }

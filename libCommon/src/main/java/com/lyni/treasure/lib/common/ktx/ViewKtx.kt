@@ -64,9 +64,19 @@ val View.isVisible: Boolean
  * 设置点击事件
  * @param listener 点击事件
  */
-fun View.click(listener: (View) -> Unit) {
+fun View.onClick(listener: (View) -> Unit) {
     this.setOnClickListener(listener)
 }
+
+/**
+ * 设置长按事件
+ * @param consume 是否被消费
+ * @param listener 执行时间
+ */
+inline fun View.onLongClick(
+    consume: Boolean = true,
+    crossinline listener: () -> Unit
+) = setOnLongClickListener { listener.invoke(); consume }
 
 /**
  * 获取有效的Edittext字符串
@@ -182,7 +192,7 @@ fun View.getBitmap(): Bitmap {
 
 /**
  * 获取recyclerview的整个屏幕截图
- * @param  结束回调
+ * @param  onFinish 结束回调
  */
 fun RecyclerView.getBitmap(onFinish: (Bitmap) -> Unit) {
     ScreenShot.startRvShoot()

@@ -4,6 +4,24 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/app/src/main/res/layout/activity_main.xml" value="0.22135416666666666" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/common_bg_16_ffffff.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/common_bg_dialog_file_selector.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/ic_arrow_right_simple_24.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/ic_divider.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/ic_divider_file_path.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/ic_file_3d.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/ic_file_config.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/ic_file_db.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/ic_file_db_2.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/ic_file_exe.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/ic_file_link.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/ic_file_ppt.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/ic_file_program.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/ic_file_wps.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/drawable/ic_folder.xml" value="0.199" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/layout/dialog_file_select.xml" value="0.4" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/layout/item_file_filepicker.xml" value="0.4" />
+        <entry key="..\:/Data/Projects/AndroidStudioProjects/Dev/Treasure/libCommon/src/main/res/layout/item_path_filepicker.xml" value="0.4" />
       </map>
     </option>
   </component>
