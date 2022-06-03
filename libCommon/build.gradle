@@ -11,7 +11,7 @@ dependencies {
     // recycler view
     compileOnly 'androidx.recyclerview:recyclerview:1.2.1'
     // kotlin coroutine
-    compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1-native-mt'
+    compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.2'
     // mmkv
     compileOnly 'com.tencent:mmkv:1.2.13'
     // gson
@@ -31,7 +31,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.lyni.treasure'
                 artifactId = 'treasure'
-                version = '1.0.0-alpha4'
+                version = '1.0.0-alpha5'
             }
         }
     }

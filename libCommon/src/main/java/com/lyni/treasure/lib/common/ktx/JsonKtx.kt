@@ -129,16 +129,16 @@ fun <T> String.jsonToMutableListOrNull(cls: Class<T>): MutableList<T>? = try {
  * @throws JsonParseException
  */
 @Throws(JsonSyntaxException::class, JsonParseException::class)
-fun <T> String.jsonToMap(): Map<String, T> =
-    GsonUtil.getGsonInstance().fromJson(this, object : TypeToken<Map<String, T>>() {}.type)
+fun <T> String.jsonToMap(): HashMap<String, T> =
+    GsonUtil.getGsonInstance().fromJson(this, object : TypeToken<HashMap<String, T>>() {}.type)
 
 /**
  * json字符串转成map的，转换失败则返回空值
  *
  * @return Map<String, T> or null
  */
-fun <T> String.jsonToMapOrNull(): Map<String, T>? = try {
-    GsonUtil.getGsonInstance().fromJson(this, object : TypeToken<Map<String, T>>() {}.type)
+fun <T> String.jsonToMapOrNull(): HashMap<String, T>? = try {
+    GsonUtil.getGsonInstance().fromJson(this, object : TypeToken<HashMap<String, T>>() {}.type)
 } catch (e: Exception) {
     e.printOnDebug()
     null
@@ -150,8 +150,8 @@ fun <T> String.jsonToMapOrNull(): Map<String, T>? = try {
  * @return List<Map<String, T>>
  */
 @Throws(JsonSyntaxException::class, JsonParseException::class)
-fun <T> String.jsonToListOfMap(): List<Map<String, T>> =
-    GsonUtil.getGsonInstance().fromJson(this, object : TypeToken<List<Map<String, T>>>() {}.type)
+fun <T> String.jsonToListOfMap(): MutableList<HashMap<String, T>> =
+    GsonUtil.getGsonInstance().fromJson(this, object : TypeToken<MutableList<HashMap<String, T>>>() {}.type)
 
 /**
  * json字符串转成list中有map的，转换失败则返回空值
@@ -160,8 +160,8 @@ fun <T> String.jsonToListOfMap(): List<Map<String, T>> =
  * @throws JsonSyntaxException
  * @throws JsonParseException
  */
-fun <T> String.jsonToListOfMapOrNull(): List<Map<String, T>>? = try {
-    GsonUtil.getGsonInstance().fromJson(this, object : TypeToken<List<Map<String, T>>>() {}.type)
+fun <T> String.jsonToListOfMapOrNull(): MutableList<HashMap<String, T>>? = try {
+    GsonUtil.getGsonInstance().fromJson(this, object : TypeToken<MutableList<HashMap<String, T>>>() {}.type)
 } catch (e: Exception) {
     e.printOnDebug()
     null
