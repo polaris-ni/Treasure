@@ -3,18 +3,18 @@ package com.lyni.treasure.lib.common.listeners
 import android.graphics.Rect
 import android.view.ViewTreeObserver
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.*
 import com.lyni.treasure.lib.common.utils.Log
 
 /**
  * @date 2022/5/24
  * @author Liangyong Ni
- * description GlobalLayoutChangeListener
+ * description [KeyboardChangeListener] - 键盘高度变化监听器
  */
-class GlobalLayoutChangeListener(private var activity: FragmentActivity? = null, private val onChange: (keyboardHeight: Int) -> Unit) :
-    ViewTreeObserver.OnGlobalLayoutListener, LifecycleObserver {
+open class KeyboardChangeListener(
+    private var activity: FragmentActivity? = null,
+    private val onChange: (keyboardHeight: Int) -> Unit
+) : ViewTreeObserver.OnGlobalLayoutListener, LifecycleEventObserver {
     companion object {
         private const val TAG = "GlobalLayoutChangeListener"
     }
@@ -36,17 +36,15 @@ class GlobalLayoutChangeListener(private var activity: FragmentActivity? = null,
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun addListener() {
+    protected open fun addListener() {
         requireActivity().run {
-            window.decorView.viewTreeObserver.addOnGlobalLayoutListener(this@GlobalLayoutChangeListener)
-            lifecycle.addObserver(this@GlobalLayoutChangeListener)
+            window.decorView.viewTreeObserver.addOnGlobalLayoutListener(this@KeyboardChangeListener)
+            lifecycle.addObserver(this@KeyboardChangeListener)
         }
         Log.d(TAG, "GlobalLayoutChangeListener is added")
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun removeListener() {
+    protected open fun removeListener() {
         requireActivity().window.decorView.viewTreeObserver.removeOnGlobalLayoutListener(this)
         activity = null
         Log.d(TAG, "GlobalLayoutChangeListener is removed")
@@ -57,5 +55,13 @@ class GlobalLayoutChangeListener(private var activity: FragmentActivity? = null,
             throw RuntimeException("Activity is not attached to KeyboardStateChangeListener")
         }
         return activity!!
+    }
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+        when (event) {
+            Lifecycle.Event.ON_CREATE -> addListener()
+            Lifecycle.Event.ON_DESTROY -> removeListener()
+            else -> {}
+        }
     }
 }

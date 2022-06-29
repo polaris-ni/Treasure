@@ -55,10 +55,7 @@ fun View.invisible() {
 /**
  * View是否可见
  */
-val View.isVisible: Boolean
-    get() {
-        return visibility == View.VISIBLE
-    }
+fun View.isVisible(): Boolean = visibility == View.VISIBLE
 
 /**
  * 设置点击事件
@@ -77,46 +74,6 @@ inline fun View.onLongClick(
     consume: Boolean = true,
     crossinline listener: () -> Unit
 ) = setOnLongClickListener { listener.invoke(); consume }
-
-/**
- * 获取有效的Edittext字符串
- * @return str
- */
-fun EditText.getEffectiveText(): String {
-    return this.text.toString().trim()
-}
-
-/**
- * EditText拦截emoji
- */
-fun EditText.prohibitEmoji(emojiCall: () -> Unit = {}) {
-    this.addFilter(EditTextUtil.getInputFilterProhibitEmoji(emojiCall))
-}
-
-/**
- * EditText拦截特殊字符
- */
-fun EditText.prohibitSP() {
-    this.addFilter(EditTextUtil.getInputFilterProhibitSP())
-}
-
-/**
- * EditText拦截空格
- */
-fun EditText.prohibitSpace() {
-    this.addFilter(EditTextUtil.getInputFilterProhibitSpace())
-}
-
-
-/**
- * EditText新增拦截器
- * @param filter 拦截器
- */
-fun EditText.addFilter(filter: InputFilter) {
-    this.filters = filters.toMutableList().apply {
-        add(filter)
-    }.toTypedArray()
-}
 
 /**
  * 扩大view的点击区域

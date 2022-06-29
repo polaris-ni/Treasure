@@ -10,13 +10,10 @@ import com.lyni.treasure.lib.common.utils.Utils
  * @author Liangyong Ni
  * description 资源类扩展方法
  */
-val Int.getString
-    get() = Utils.getAppContext().getString(this)
+fun Int.getString() = Utils.getAppContext().getString(this)
 
-val Int.getDrawable
-    get() = ContextCompat.getDrawable(Utils.getAppContext(), this)?.apply {
-        setBounds(0, 0, minimumWidth, minimumHeight)
-    }
+fun Int.getDrawable() = ContextCompat.getDrawable(Utils.getAppContext(), this)?.apply {
+    setBounds(0, 0, minimumWidth, minimumHeight)
+}
 
-val Int.getColor
-    get() = ContextCompat.getColor(Utils.getAppContext(), this)
+fun Int.getColor() = ContextCompat.getColor(Utils.getAppContext(), this)

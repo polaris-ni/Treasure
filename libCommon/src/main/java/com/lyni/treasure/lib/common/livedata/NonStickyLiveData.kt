@@ -45,7 +45,7 @@ class NonStickyLiveData<T> : MutableLiveData<T>() {
 
 
     fun observe(owner: LifecycleOwner, stick: Boolean = false, observer: Observer<in T>) {
-        //新来的观察者锁住消息通知
+        // 新来的观察者锁住消息通知
         mLock.set(true)
         super.observe(owner, WrapperObserver(stick, observer))
     }
@@ -55,7 +55,7 @@ class NonStickyLiveData<T> : MutableLiveData<T>() {
     }
 
     fun observeForever(stick: Boolean = false, observer: Observer<in T>) {
-        //新来的观察者锁住消息通知
+        // 新来的观察者锁住消息通知
         mLock.set(true)
         super.observeForever(WrapperObserver(stick, observer))
     }
