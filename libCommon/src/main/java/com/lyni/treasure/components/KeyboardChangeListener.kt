@@ -4,8 +4,8 @@ import android.graphics.Rect
 import android.view.ViewTreeObserver
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import com.lyni.treasure.interfaces.ProactiveLifecycleEventObserver
 import com.lyni.treasure.utils.Log
 
 /**
@@ -16,9 +16,9 @@ import com.lyni.treasure.utils.Log
 open class KeyboardChangeListener(
     private var activity: FragmentActivity? = null,
     private val onChange: (keyboardHeight: Int) -> Unit
-) : ViewTreeObserver.OnGlobalLayoutListener, LifecycleEventObserver {
+) : ViewTreeObserver.OnGlobalLayoutListener, ProactiveLifecycleEventObserver {
     companion object {
-        private const val TAG = "GlobalLayoutChangeListener"
+        private const val TAG = "KeyboardChangeListener"
     }
 
     private var mWindowHeight = 0

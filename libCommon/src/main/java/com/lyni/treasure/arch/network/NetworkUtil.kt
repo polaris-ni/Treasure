@@ -14,7 +14,6 @@ import android.telephony.TelephonyManager
 import android.text.TextUtils
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
-import com.lyni.treasure.interfaces.NetworkChangeListener
 import com.lyni.treasure.ktx.appContext
 import com.lyni.treasure.ktx.negative
 import com.lyni.treasure.utils.Utils.getAppContext
@@ -338,29 +337,29 @@ object NetworkUtil {
     /**
      * 注册网络变化监听器
      *
-     * @param listener [NetworkChangeListener] - 监听器
+     * @param listener [NetworkStatusListener] - 监听器
      */
     @RequiresPermission(permission.ACCESS_NETWORK_STATE)
-    fun registerNetworkStatusChangedListener(listener: NetworkChangeListener) {
+    fun registerNetworkStatusListener(listener: NetworkStatusListener) {
         NetworkChangedReceiver.instance.registerListener(listener)
     }
 
     /**
      * 判断网络变化监听器是否注册
      *
-     * @param listener [NetworkChangeListener] - 监听器
+     * @param listener [NetworkStatusListener] - 监听器
      * @return true or false
      */
-    fun isRegisteredNetworkStatusChangedListener(listener: NetworkChangeListener): Boolean {
+    fun isRegisteredNetworkStatusListener(listener: NetworkStatusListener): Boolean {
         return NetworkChangedReceiver.instance.isRegistered(listener)
     }
 
     /**
      * 注销网络变化监听器
      *
-     * @param listener [NetworkChangeListener] - 监听器
+     * @param listener [NetworkStatusListener] - 监听器
      */
-    fun unregisterNetworkStatusChangedListener(listener: NetworkChangeListener) {
+    fun unregisterNetworkStatusListener(listener: NetworkStatusListener) {
         NetworkChangedReceiver.instance.unregisterListener(listener)
     }
 
@@ -437,5 +436,27 @@ object NetworkUtil {
         } else {
             return false
         }
+    }
+
+    /**
+     * 注册网络变化回调，使用系统方式[ConnectivityManager.NetworkCallback]
+     *
+     * @param callback 回调
+     */
+    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresPermission(value = "android.permission.ACCESS_NETWORK_STATE")
+    fun registerCallback(callback: ConnectivityManager.NetworkCallback) {
+        getConnectivityManager().registerDefaultNetworkCallback(callback)
+    }
+
+    /**
+     * 注销网络变化回调，使用系统方式[ConnectivityManager.NetworkCallback]
+     *
+     * @param callback 回调
+     */
+    @RequiresApi(Build.VERSION_CODES.N)
+    @RequiresPermission(value = "android.permission.ACCESS_NETWORK_STATE")
+    fun unregisterCallback(callback: ConnectivityManager.NetworkCallback) {
+        getConnectivityManager().unregisterNetworkCallback(callback)
     }
 }

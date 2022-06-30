@@ -591,7 +591,8 @@ object FileUtils {
      */
     fun getSize(path: String): String {
         val fileSize = getLength(path)
-        return ConvertUtils.formatFileSize(fileSize)
+        // TODO:  
+        return fileSize.toString()
     }
 
     /**

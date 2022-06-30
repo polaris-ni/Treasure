@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import androidx.annotation.RequiresPermission
-import com.lyni.treasure.interfaces.NetworkChangeListener
 import com.lyni.treasure.ktx.runOnUiThread
 import com.lyni.treasure.ktx.runOnUiThreadDelayed
 import com.lyni.treasure.utils.Utils
@@ -17,7 +16,7 @@ import com.lyni.treasure.utils.Utils
 /**
  * @author Liangyong Ni
  * @date 2022/6/30
- * description [NetworkChangedReceiver]
+ * description [NetworkChangedReceiver]网络变化广播接收器
  */
 class NetworkChangedReceiver : BroadcastReceiver() {
 
@@ -26,10 +25,11 @@ class NetworkChangedReceiver : BroadcastReceiver() {
     }
 
     private var lastNetworkType: NetworkType? = null
-    private val mListeners = HashSet<NetworkChangeListener>()
+    private val mListeners = HashSet<NetworkStatusListener>()
 
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
-    fun registerListener(listener: NetworkChangeListener) {
+    @Synchronized
+    fun registerListener(listener: NetworkStatusListener) {
         runOnUiThread {
             val preSize = mListeners.size
             mListeners.add(listener)
@@ -41,11 +41,11 @@ class NetworkChangedReceiver : BroadcastReceiver() {
         }
     }
 
-    fun isRegistered(listener: NetworkChangeListener): Boolean {
+    fun isRegistered(listener: NetworkStatusListener): Boolean {
         return mListeners.contains(listener)
     }
 
-    fun unregisterListener(listener: NetworkChangeListener) {
+    fun unregisterListener(listener: NetworkStatusListener) {
         runOnUiThread {
             val preSize = mListeners.size
             mListeners.remove(listener)
@@ -58,11 +58,11 @@ class NetworkChangedReceiver : BroadcastReceiver() {
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     override fun onReceive(context: Context, intent: Intent) {
         if (ConnectivityManager.CONNECTIVITY_ACTION == intent.action) {
-            // debouncing
+            // 延迟，防止抖动
             runOnUiThreadDelayed(1000) {
                 val currentNetworkType = NetworkUtil.getNetworkType()
                 for (listener in mListeners) {
-                    listener.onChanged(currentNetworkType, lastNetworkType!!)
+                    listener.onReceiveStatus(currentNetworkType, lastNetworkType!!)
                 }
                 lastNetworkType = currentNetworkType
             }

@@ -1,10 +1,8 @@
 package com.lyni.treasure.arch.ui
 
 import android.app.Dialog
-import android.os.Build
 import android.os.Bundle
 import android.view.*
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
@@ -25,9 +23,7 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
     private val seed = nowTime()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStyle(STYLE_NORMAL, getStyle())
-        }
+        setStyle(STYLE_NORMAL, getStyle())
         super.onCreate(savedInstanceState)
     }
 
@@ -89,7 +85,7 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
     open fun initListener() {}
 
     //默认style-可以加动画相关的style
-    @RequiresApi(Build.VERSION_CODES.M)
+    // TODO:  
     open fun getStyle(): Int = android.R.style.ThemeOverlay_Material_Dialog
 
     //动画效果
