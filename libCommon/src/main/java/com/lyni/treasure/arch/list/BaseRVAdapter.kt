@@ -1,4 +1,4 @@
-package com.lyni.treasure.base.list
+package com.lyni.treasure.arch.list
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,13 +9,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.lyni.treasure.arch.list.animations.ItemAnimation
 import com.lyni.treasure.ktx.onLongClick
 import java.util.*
 
 /**
- * Created by Invincible on 2017/11/24.
- *
- * 通用的adapter 可添加header，footer，以及不同类型item
+ * @date 2022/6/30
+ * @author Liangyong Ni
+ * description 通用的adapter
  */
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 abstract class BaseRVAdapter<ITEM, VB : ViewBinding>(protected val context: Context) :

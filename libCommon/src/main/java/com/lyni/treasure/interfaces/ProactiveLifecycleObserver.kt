@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleObserver
 /**
  * @date 2022/5/13
  * @author Liangyong Ni
- * description ProactiveLifecycleObserver. Only for calling [observe] proactively.
+ * description [ProactiveLifecycleObserver]. Only for calling [observe] proactively.
  */
 interface ProactiveLifecycleObserver : LifecycleObserver {
     /**

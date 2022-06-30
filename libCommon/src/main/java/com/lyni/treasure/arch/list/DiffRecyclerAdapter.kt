@@ -1,4 +1,4 @@
-package com.lyni.treasure.base.list
+package com.lyni.treasure.arch.list
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import com.lyni.treasure.arch.list.animations.ItemAnimation
 import com.lyni.treasure.ktx.onLongClick
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")

@@ -1,9 +1,10 @@
-package com.lyni.treasure.base.ui
+package com.lyni.treasure.arch.ui
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.*
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
@@ -16,6 +17,7 @@ import java.lang.reflect.ParameterizedType
  * @author Liangyong Ni
  * description BaseDialogFragment
  */
+@Suppress("unused", "MemberVisibilityCanBePrivate")
 abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
 
     protected lateinit var binding: VB
@@ -23,7 +25,9 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
     private val seed = nowTime()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setStyle(STYLE_NORMAL, getStyle())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setStyle(STYLE_NORMAL, getStyle())
+        }
         super.onCreate(savedInstanceState)
     }
 
@@ -85,6 +89,7 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
     open fun initListener() {}
 
     //默认style-可以加动画相关的style
+    @RequiresApi(Build.VERSION_CODES.M)
     open fun getStyle(): Int = android.R.style.ThemeOverlay_Material_Dialog
 
     //动画效果
@@ -113,16 +118,4 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
     }
 
     open fun show(manager: FragmentManager) = show(manager, this.javaClass.simpleName + seed)
-
-    fun getDisplayHeight(): Int {
-        val outMetrics = DisplayMetrics()
-        requireActivity().windowManager.defaultDisplay.getMetrics(outMetrics)
-        return outMetrics.heightPixels
-    }
-
-    fun getDisplayWidth(): Int {
-        val outMetrics = DisplayMetrics()
-        requireActivity().windowManager.defaultDisplay.getMetrics(outMetrics)
-        return outMetrics.widthPixels
-    }
 }

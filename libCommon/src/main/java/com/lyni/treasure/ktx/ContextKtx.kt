@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "DEPRECATION")
 
 package com.lyni.treasure.ktx
 
@@ -7,24 +7,25 @@ import android.app.Activity
 import android.app.PendingIntent
 import android.app.PendingIntent.*
 import android.app.Service
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.graphics.drawable.Drawable
-import android.net.ConnectivityManager
 import android.net.Uri
-import android.os.BatteryManager
 import android.os.Build
 import android.os.Process
 import android.preference.PreferenceManager
 import android.provider.Settings
+import android.util.DisplayMetrics
+import android.view.WindowManager
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import com.lyni.treasure.utils.Utils
-import com.lyni.treasure.utils.showLongToast
 import com.lyni.treasure.utils.showToast
 import java.io.File
 import kotlin.system.exitProcess
@@ -197,22 +198,6 @@ val Context.navigationBarHeight: Int
         return resources.getDimensionPixelSize(resourceId)
     }
 
-
-fun Context.sendToClip(text: String) {
-    val clipData = ClipData.newPlainText(null, text)
-    clipboardManager.setPrimaryClip(clipData)
-    showLongToast("复制成功")
-}
-
-fun Context.getClipText(): String? {
-    clipboardManager.primaryClip?.let {
-        if (it.itemCount > 0) {
-            return it.getItemAt(0).text.toString().trim()
-        }
-    }
-    return null
-}
-
 fun Context.sendMail(mail: String) {
     try {
         val intent = Intent(Intent.ACTION_SENDTO)
@@ -224,34 +209,11 @@ fun Context.sendMail(mail: String) {
     }
 }
 
-/**
- * 获取电量
- */
-val Context.sysBattery: Int
-    get() {
-        val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-        val batteryStatus = registerReceiver(null, iFilter)
-        return batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
-    }
-
 val Context.externalFiles: File
     get() = this.getExternalFilesDir(null) ?: this.filesDir
 
 val Context.externalCache: File
     get() = this.externalCacheDir ?: this.cacheDir
-
-@Suppress("DEPRECATION")
-val Context.isWifiConnect: Boolean
-    @SuppressLint("MissingPermission")
-    get() {
-        val info = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
-        return info?.isConnected == true
-    }
-
-val Context.isPad: Boolean
-    get() {
-        return (resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE
-    }
 
 val Context.channel: String
     get() {
@@ -264,3 +226,13 @@ val Context.channel: String
         }
         return ""
     }
+
+fun Context.getDisplayMetrics(): DisplayMetrics = this.resources.displayMetrics
+
+fun Context.getRealDisplayMetrics(): DisplayMetrics {
+    val outMetrics = DisplayMetrics()
+    getWindowManager().defaultDisplay.getRealMetrics(outMetrics)
+    return outMetrics
+}
+
+fun Context.getWindowManager() = getSystemService(Context.WINDOW_SERVICE) as WindowManager

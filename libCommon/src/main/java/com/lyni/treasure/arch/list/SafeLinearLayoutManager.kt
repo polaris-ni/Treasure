@@ -1,4 +1,4 @@
-package com.lyni.treasure.base.list
+package com.lyni.treasure.arch.list
 
 import android.content.Context
 import android.util.AttributeSet

@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package com.lyni.treasure.utils
 
 import android.content.Context

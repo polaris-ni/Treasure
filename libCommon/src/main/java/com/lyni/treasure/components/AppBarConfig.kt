@@ -1,4 +1,4 @@
-@file:Suppress("DEPRECATION", "UNUSED")
+@file:Suppress("DEPRECATION", "UNUSED", "UNCHECKED_CAST")
 
 package com.lyni.treasure.components
 
@@ -24,17 +24,19 @@ import com.lyni.treasure.common.R
  */
 fun Activity.setLightStatusBar(isLightingColor: Boolean) {
     val window = this.window
-    if (isLightingColor) {
-        window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-    } else {
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (isLightingColor) {
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        } else {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        }
     }
 }
 
 fun Activity.setLightNavigationBar(isLightingColor: Boolean) {
     val window = this.window
-    if (isLightingColor) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isLightingColor) {
         window.decorView.systemUiVisibility =
             window.decorView.systemUiVisibility or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR else 0
     }
@@ -192,7 +194,12 @@ val Activity.screenSize: Size
     }
 
 fun Activity.setStatusBarColor(@ColorInt color: Int) {
-    window.decorView.findViewById<View?>(R.id.status_bar_view)?.setBackgroundColor(color)
+    val statusBarView = window.decorView.findViewById<View?>(R.id.status_bar_view)
+    if (color == 0 && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+        statusBarView?.setBackgroundColor(STATUS_BAR_MASK_COLOR)
+    } else {
+        statusBarView?.setBackgroundColor(color)
+    }
 }
 
 fun Activity.setNavigationBarColor(color: Int) {
@@ -204,7 +211,6 @@ fun Activity.setNavigationBarColor(color: Int) {
     }
 }
 
-@Suppress("UNCHECKED_CAST")
 val Activity.navigationBarHeightLiveData: LiveData<Int>
     get() {
         var liveData = window.decorView.getTag(R.id.navigation_height_live_data) as? LiveData<Int>

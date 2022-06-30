@@ -1,5 +1,6 @@
 package com.lyni.treasure.ktx
 
+import android.os.Handler
 import android.os.Looper
 
 /**
@@ -19,8 +20,23 @@ val mainLooper: Looper = Looper.getMainLooper()
 @JvmField
 val mainThread: Thread = mainLooper.thread
 
+@JvmField
+val mainHandler: Handler = Handler(Looper.getMainLooper())
+
 /**
  * 判断是否是主线程
  */
 fun isMainThread() = mainThread === Thread.currentThread()
+
+fun runOnUiThread(runnable: Runnable) {
+    if (isMainThread()) {
+        runnable.run()
+    } else {
+        mainHandler.post(runnable)
+    }
+}
+
+fun runOnUiThreadDelayed(duration: Long, runnable: Runnable) {
+    mainHandler.postDelayed(runnable, duration)
+}
 

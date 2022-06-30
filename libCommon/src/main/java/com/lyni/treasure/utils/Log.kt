@@ -18,12 +18,6 @@ object Log {
 
     fun isDebug() = isDebug
 
-//    fun e(tag: String, msg: String) {
-//        if (isDebug) {
-//            Log.e(tag, msg)
-//        }
-//    }
-
     fun e(tag: String, msg: String, tr: Throwable? = null) {
         if (isDebug) {
             Log.e(tag, msg, tr)
