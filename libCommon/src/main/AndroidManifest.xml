@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.lyni.treasure.lib.common">
+    package="com.lyni.treasure.common">
 
     <application>
         <provider
@@ -10,7 +10,7 @@
             android:exported="false"
             tools:node="merge">
             <meta-data
-                android:name="com.lyni.treasure.lib.common.TreasureInitializer"
+                android:name="com.lyni.treasure.TreasureInitializer"
                 android:value="androidx.startup" />
         </provider>
     </application>
