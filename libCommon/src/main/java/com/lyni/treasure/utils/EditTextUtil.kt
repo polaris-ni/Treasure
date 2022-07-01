@@ -6,7 +6,8 @@ import android.text.InputFilter
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
-import com.lyni.treasure.ktx.match
+import com.lyni.treasure.utils.TextUtil.isEmoji
+import com.lyni.treasure.utils.TextUtil.isSpecialChar
 
 /**
  * @date 2022/3/4
@@ -16,20 +17,21 @@ import com.lyni.treasure.ktx.match
 object EditTextUtil {
     /**
      * 限制emoji输入
+     * @param onLimit 当输入是Emoji时回调
      */
     @JvmStatic
-    fun getInputFilterProhibitEmoji(emojiCall: () -> Unit = {}): InputFilter {
+    fun getInputFilterProhibitEmoji(onLimit: (() -> Unit)? = null): InputFilter {
         return InputFilter { source, start, end, _, _, _ ->
             val buffer = StringBuffer()
             var i = start
             while (i < end) {
                 val codePoint = source[i]
-                if (!getIsEmoji(codePoint)) {
+                if (!isEmoji(codePoint)) {
                     buffer.append(codePoint)
                 } else {
                     i++
                     i++
-                    emojiCall()
+                    onLimit?.invoke()
                     continue
                 }
                 i++
@@ -47,32 +49,22 @@ object EditTextUtil {
         }
     }
 
-    private fun getIsEmoji(codePoint: Char): Boolean {
-        return if (codePoint.code == 0x0 || codePoint.code == 0x9 || codePoint.code == 0xA
-            || codePoint.code == 0xD
-            || codePoint.code in 0x20..0xD7FF
-            || codePoint.code in 0xE000..0xFFFD
-            || codePoint.code in 0x10000..0x10FFFF
-        ) false else {
-            return true
-        }
-    }
-
     /**
      * 限制特殊字符输入
      */
     @JvmStatic
-    fun getInputFilterProhibitSP(): InputFilter {
+    fun getInputFilterProhibitSP(onLimit: (() -> Unit)? = null): InputFilter {
         return InputFilter { source, start, end, _, _, _ ->
             val buffer = StringBuffer()
             var i = start
             while (i < end) {
                 val codePoint = source[i]
-                if (!getIsSp(codePoint)) {
+                if (!isSpecialChar(codePoint)) {
                     buffer.append(codePoint)
                 } else {
                     i++
                     i++
+                    onLimit?.invoke()
                     continue
                 }
                 i++
@@ -94,42 +86,27 @@ object EditTextUtil {
         }
     }
 
-    fun getInputFilterProhibitSPWithoutAt(): InputFilter {
-        return InputFilter { source, _, _, _, _, _ ->
-            if (source.toString().match(
-                    "[`~!#\$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]"
-                )
-            ) {
-                return@InputFilter ""
-            } else {
-                return@InputFilter null
-            }
-        }
-    }
-
     /**
      * 限制空格输入
      */
-    fun getInputFilterProhibitSpace(): InputFilter {
+    @JvmStatic
+    fun getInputFilterProhibitSpace(onLimit: (() -> Unit)? = null): InputFilter {
         return InputFilter { source, _, _, _, _, _ ->
             if (source.equals(" ")) {
+                onLimit?.invoke()
                 ""
-            } else {
-                null
-            }
+            } else null
         }
-    }
-
-    private fun getIsSp(codePoint: Char): Boolean {
-        return Character.getType(codePoint) > Character.LETTER_NUMBER
     }
 
     /**
      * 限制输入字数
-     * @param max 最大输入字数
-     * @param onOverLimit 超出字数回调
+     *
+     * @param max           最大输入字数
+     * @param onLimit   超出字数回调
      */
-    fun getLengthLimitInputFilter(max: Int, onOverLimit: (() -> Unit)?): InputFilter {
+    @JvmStatic
+    fun getLengthLimitInputFilter(max: Int, onLimit: (() -> Unit)? = null): InputFilter {
         return object : InputFilter {
             override fun filter(
                 source: CharSequence, start: Int, end: Int, dest: Spanned,
@@ -138,7 +115,7 @@ object EditTextUtil {
                 var keep = max - (dest.length - (dend - dstart))
                 return when {
                     keep <= 0 -> {
-                        onOverLimit?.invoke()
+                        onLimit?.invoke()
                         ""
                     }
                     keep >= end - start -> null

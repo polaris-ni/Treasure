@@ -61,30 +61,3 @@ object CoroutineExceptionHandlerWithReleaseUploadAndDebugThrow
         }
     }
 }
-
-/**
- * 具有延迟执行和重复执行功能并在主线程上运行的协程启动器
- * @param tag 日志TAG
- * @param delay 延迟执行时间，默认不延迟
- * @param repeat 重复次数，默认执行一次
- * @param duration 每次执行时间隔时间，以一次任务执行完算起，默认无间隔
- * @param action 执行的协程体
- * @return Job
- */
-fun timedLaunch(
-    tag: String = "Timed Task",
-    delay: Long = 0L,
-    repeat: Long = 1,
-    duration: Long = 0,
-    action: suspend (CoroutineScope) -> Unit
-) = mainLaunch {
-    check(delay >= 0) { "timeMills must be positive" }
-    delay(delay)
-    var i = 0
-    while (i < repeat) {
-        Log.i(tag, "Repeat $i in $repeat")
-        action.invoke(it)
-        delay(duration)
-        i += 1
-    }
-}

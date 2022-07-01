@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package com.lyni.treasure.ktx
 
 import android.os.Build

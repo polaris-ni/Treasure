@@ -4,10 +4,6 @@ package com.lyni.treasure.utils
 
 import android.annotation.SuppressLint
 import com.lyni.treasure.ktx.nowTime
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -109,31 +105,6 @@ object DateUtil {
         val d2 = instance[Calendar.DAY_OF_YEAR]
         return d1 - d2 == 1
     }
-
-    /**
-     * @param scope     scope
-     * @param total     剩余时间(毫秒)
-     * @param interval  更新间隔(毫秒)
-     * @param onTick    更新回调
-     * @param onFinish  正常完成时回调
-     * @return job
-     */
-    fun countDownCancellable(
-        total: Long, scope: CoroutineScope, interval: Long = 1000,
-        onTick: ((Long) -> Unit)? = null, onFinish: (() -> Unit)?
-    ) = flow {
-        for (i in total downTo 0 step interval) {
-            emit(i)
-            delay(interval)
-        }
-    }.flowOn(Dispatchers.Main)
-        .onCompletion { cause ->
-            if (cause == null) {
-                onFinish?.invoke()
-            }
-        }
-        .onEach { onTick?.invoke(it) }
-        .launchIn(scope)
 
     /**
      * 根据生日获取周岁
