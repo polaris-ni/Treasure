@@ -1,12 +1,14 @@
-package com.lyni.treasure
+package com.lyni.treasure.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.lyni.treasure.R
 import com.lyni.treasure.ktx.mainHandler
 import com.lyni.treasure.ktx.onClick
+import com.lyni.treasure.vm.model.TestItem
 
 /**
  * @author Liangyong Ni

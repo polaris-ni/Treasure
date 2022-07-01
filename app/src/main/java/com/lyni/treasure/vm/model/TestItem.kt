@@ -1,4 +1,4 @@
-package com.lyni.treasure
+package com.lyni.treasure.vm.model
 
 /**
  * @author Liangyong Ni

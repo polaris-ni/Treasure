@@ -1,4 +1,4 @@
-package com.lyni.treasure
+package com.lyni.treasure.ui.activity
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -13,7 +13,9 @@ import com.lyni.treasure.arch.network.NetworkUtil
 import com.lyni.treasure.components.*
 import com.lyni.treasure.databinding.ActivityMainBinding
 import com.lyni.treasure.ktx.*
+import com.lyni.treasure.ui.adapter.TestAdapter
 import com.lyni.treasure.utils.Log
+import com.lyni.treasure.vm.model.TestItem
 
 class MainActivity : AppCompatActivity() {
 
