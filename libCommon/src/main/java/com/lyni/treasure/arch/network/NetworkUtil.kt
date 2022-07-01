@@ -89,14 +89,6 @@ object NetworkUtil {
     }
 
     /**
-     * 是否启动代理
-     *
-     * @return true or false
-     */
-    fun isProxyEnabled(): Boolean =
-        !(System.getProperty("http.proxyHost") == null || System.getProperty("http.proxyPort") == null)
-
-    /**
      * 判断网络是否通过VPN连接
      *
      * @return true or false
@@ -130,8 +122,7 @@ object NetworkUtil {
     @RequiresPermission(permission.ACCESS_NETWORK_STATE)
     fun is4G(): Boolean {
         val info = getActiveNetworkInfo()
-        return (info != null && info.isAvailable
-                && info.subtype == TelephonyManager.NETWORK_TYPE_LTE)
+        return (info != null && info.isAvailable && info.subtype == TelephonyManager.NETWORK_TYPE_LTE)
     }
 
     /**

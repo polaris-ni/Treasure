@@ -28,6 +28,7 @@ dependencies {
     // mmkv
     implementation 'com.tencent:mmkv:1.2.13'
     // gson
+    implementation 'com.github.polaris-ni:QuickPermission:1.0.0-alpha2'
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
     implementation "androidx.startup:startup-runtime:1.1.1"

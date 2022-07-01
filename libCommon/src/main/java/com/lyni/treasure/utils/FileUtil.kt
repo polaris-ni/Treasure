@@ -5,16 +5,18 @@ import android.webkit.MimeTypeMap
 import androidx.annotation.IntDef
 import com.lyni.treasure.ktx.appContext
 import com.lyni.treasure.ktx.cnCompare
-import com.lyni.treasure.ktx.externalCache
 import com.lyni.treasure.ktx.printOnDebug
 import java.io.*
 import java.nio.charset.Charset
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
-object FileUtils {
+object FileUtil {
+
+    fun getExternalFilesDir(): File = appContext.getExternalFilesDir(null) ?: appContext.filesDir
+
+    fun getExternalCacheDir(): File = appContext.externalCacheDir ?: appContext.cacheDir
 
     fun createFileIfNotExist(root: File, vararg subDirFiles: String): File {
         val filePath = getPath(root, *subDirFiles)
@@ -28,7 +30,6 @@ object FileUtils {
 
     fun createFolderIfNotExist(filePath: String): File {
         val file = File(filePath)
-        //如果文件夹不存在，就创建它
         if (!file.exists()) {
             file.mkdirs()
         }
@@ -53,7 +54,7 @@ object FileUtils {
         return file
     }
 
-    fun createFileWithReplace(filePath: String): File {
+    fun createFileOrReplace(filePath: String): File {
         val file = File(filePath)
         if (!file.exists()) {
             //创建父类文件夹
@@ -93,7 +94,7 @@ object FileUtils {
     }
 
     fun getCachePath(): String {
-        return appContext.externalCache.absolutePath
+        return getExternalCacheDir().absolutePath
     }
 
     fun getSdCardPath(): String {
@@ -119,9 +120,6 @@ object FileUtils {
     @Retention(AnnotationRetention.SOURCE)
     annotation class SortType
 
-    /**
-     * 将目录分隔符统一为平台默认的分隔符，并为目录结尾添加分隔符
-     */
     fun separator(path: String): String {
         var path1 = path
         val separator = File.separator
@@ -143,9 +141,6 @@ object FileUtils {
 
     }
 
-    /**
-     * 列出指定目录下的所有子目录
-     */
     @JvmOverloads
     fun listDirs(
         startDirPath: String,
@@ -197,9 +192,6 @@ object FileUtils {
         return dirList.toTypedArray()
     }
 
-    /**
-     * 列出指定目录下的所有子目录及所有文件
-     */
     @JvmOverloads
     fun listDirsAndFiles(
         startDirPath: String,
@@ -222,9 +214,6 @@ object FileUtils {
         return res
     }
 
-    /**
-     * 列出指定目录下的所有文件
-     */
     @JvmOverloads
     fun listFiles(
         startDirPath: String,
@@ -274,9 +263,6 @@ object FileUtils {
         return fileList.toTypedArray()
     }
 
-    /**
-     * 列出指定目录下的所有文件
-     */
     fun listFiles(startDirPath: String, allowExtensions: Array<String>?): Array<File>? {
         val file = File(startDirPath)
         return file.listFiles { _, name ->
@@ -287,9 +273,6 @@ object FileUtils {
         }
     }
 
-    /**
-     * 列出指定目录下的所有文件
-     */
     fun listFiles(startDirPath: String, allowExtension: String?): Array<File>? {
         return if (allowExtension == null)
             listFiles(startDirPath, allowExtension = null)
@@ -297,55 +280,41 @@ object FileUtils {
             listFiles(startDirPath, arrayOf(allowExtension))
     }
 
-    /**
-     * 判断文件或目录是否存在
-     */
     fun exist(path: String): Boolean {
         val file = File(path)
         return file.exists()
     }
 
-    /**
-     * 删除文件或目录
-     */
     @JvmOverloads
     fun delete(file: File, deleteRootDir: Boolean = false): Boolean {
         var result = false
         if (file.isFile) {
             //是文件
-            result = deleteResolveEBUSY(file)
+            result = deleteNonEBUSY(file)
         } else {
             //是目录
             val files = file.listFiles() ?: return false
             if (files.isEmpty()) {
-                result = deleteRootDir && deleteResolveEBUSY(file)
+                result = deleteRootDir && deleteNonEBUSY(file)
             } else {
                 for (f in files) {
                     delete(f, deleteRootDir)
-                    result = deleteResolveEBUSY(f)
+                    result = deleteNonEBUSY(f)
                 }
             }
             if (deleteRootDir) {
-                result = deleteResolveEBUSY(file)
+                result = deleteNonEBUSY(file)
             }
         }
         return result
     }
 
-    /**
-     * bug: open failed: EBUSY (Device or resource busy)
-     * fix: http://stackoverflow.com/questions/11539657/open-failed-ebusy-device-or-resource-busy
-     */
-    private fun deleteResolveEBUSY(file: File): Boolean {
-        // Before you delete a Directory or File: rename it!
+    private fun deleteNonEBUSY(file: File): Boolean {
         val to = File(file.absolutePath + System.currentTimeMillis())
         file.renameTo(to)
         return to.delete()
     }
 
-    /**
-     * 删除文件或目录
-     */
     @JvmOverloads
     fun delete(path: String, deleteRootDir: Boolean = true): Boolean {
         val file = File(path)
@@ -355,17 +324,11 @@ object FileUtils {
         } else false
     }
 
-    /**
-     * 复制文件为另一个文件，或复制某目录下的所有文件及目录到另一个目录下
-     */
     fun copy(src: String, tar: String): Boolean {
         val srcFile = File(src)
         return srcFile.exists() && copy(srcFile, File(tar))
     }
 
-    /**
-     * 复制文件或目录
-     */
     fun copy(src: File, tar: File): Boolean {
         try {
             if (src.isFile) {
@@ -390,37 +353,14 @@ object FileUtils {
 
     }
 
-    /**
-     * 移动文件或目录
-     */
-    fun move(src: String, tar: String): Boolean {
-        return move(File(src), File(tar))
-    }
+    fun move(src: String, tar: String): Boolean = move(File(src), File(tar))
 
-    /**
-     * 移动文件或目录
-     */
-    fun move(src: File, tar: File): Boolean {
-        return rename(src, tar)
-    }
+    fun move(src: File, tar: File): Boolean = rename(src, tar)
 
-    /**
-     * 文件重命名
-     */
-    fun rename(oldPath: String, newPath: String): Boolean {
-        return rename(File(oldPath), File(newPath))
-    }
+    fun rename(oldPath: String, newPath: String) = rename(File(oldPath), File(newPath))
 
-    /**
-     * 文件重命名
-     */
-    fun rename(src: File, tar: File): Boolean {
-        return src.renameTo(tar)
-    }
+    fun rename(src: File, tar: File) = src.renameTo(tar)
 
-    /**
-     * 读取文本文件, 失败将返回空串
-     */
     @JvmOverloads
     fun readText(filepath: String, charset: String = "utf-8"): String {
         try {
@@ -430,13 +370,9 @@ object FileUtils {
             }
         } catch (ignored: UnsupportedEncodingException) {
         }
-
         return ""
     }
 
-    /**
-     * 读取文件内容, 失败将返回空串
-     */
     fun readBytes(filepath: String): ByteArray? {
         var fis: FileInputStream? = null
         try {
@@ -461,9 +397,6 @@ object FileUtils {
         }
     }
 
-    /**
-     * 保存文本内容
-     */
     @JvmOverloads
     fun writeText(filepath: String, content: String, charset: String = "utf-8"): Boolean {
         return try {
@@ -474,9 +407,6 @@ object FileUtils {
 
     }
 
-    /**
-     * 保存文件内容
-     */
     fun writeBytes(filepath: String, data: ByteArray): Boolean {
         val file = File(filepath)
         var fos: FileOutputStream? = null
@@ -495,17 +425,11 @@ object FileUtils {
         }
     }
 
-    /**
-     * 保存文件内容
-     */
     fun writeInputStream(filepath: String, data: InputStream): Boolean {
         val file = File(filepath)
         return writeInputStream(file, data)
     }
 
-    /**
-     * 保存文件内容
-     */
     fun writeInputStream(file: File, data: InputStream): Boolean {
         return try {
             if (!file.exists()) {
@@ -524,9 +448,6 @@ object FileUtils {
         }
     }
 
-    /**
-     * 追加文本内容
-     */
     fun appendText(path: String, content: String): Boolean {
         val file = File(path)
         var writer: FileWriter? = null
@@ -544,9 +465,6 @@ object FileUtils {
         }
     }
 
-    /**
-     * 获取文件大小
-     */
     fun getLength(path: String): Long {
         val file = File(path)
         return if (!file.isFile || !file.exists()) {
@@ -554,9 +472,6 @@ object FileUtils {
         } else file.length()
     }
 
-    /**
-     * 获取文件或网址的名称（包括后缀）
-     */
     fun getName(pathOrUrl: String?): String {
         if (pathOrUrl == null) {
             return ""
@@ -569,9 +484,6 @@ object FileUtils {
         }
     }
 
-    /**
-     * 获取文件名（不包括扩展名）
-     */
     fun getNameExcludeExtension(path: String): String {
         return try {
             var fileName = File(path).name
@@ -586,18 +498,6 @@ object FileUtils {
 
     }
 
-    /**
-     * 获取格式化后的文件大小
-     */
-    fun getSize(path: String): String {
-        val fileSize = getLength(path)
-        // TODO:  
-        return fileSize.toString()
-    }
-
-    /**
-     * 获取文件后缀,不包括“.”
-     */
     fun getExtension(pathOrUrl: String): String {
         val dotPos = pathOrUrl.lastIndexOf('.')
         return if (0 <= dotPos) {
@@ -607,59 +507,15 @@ object FileUtils {
         }
     }
 
-    /**
-     * 获取文件的MIME类型
-     */
     fun getMimeType(pathOrUrl: String): String {
         val ext = getExtension(pathOrUrl)
         val map = MimeTypeMap.getSingleton()
         return map.getMimeTypeFromExtension(ext) ?: "*/*"
     }
 
-    /**
-     * 获取格式化后的文件/目录创建或最后修改时间
-     */
-    @JvmOverloads
-    fun getDateTime(path: String, format: String = "yyyy年MM月dd日HH:mm"): String {
-        val file = File(path)
-        return getDateTime(file, format)
-    }
+    fun makeDirs(path: String): Boolean = makeDirs(File(path))
 
-    /**
-     * 获取格式化后的文件/目录创建或最后修改时间
-     */
-    fun getDateTime(file: File, format: String): String {
-        val cal = Calendar.getInstance()
-        cal.timeInMillis = file.lastModified()
-        return SimpleDateFormat(format, Locale.PRC).format(cal.time)
-    }
-
-    /**
-     * 比较两个文件的最后修改时间
-     */
-    fun compareLastModified(path1: String, path2: String): Int {
-        val stamp1 = File(path1).lastModified()
-        val stamp2 = File(path2).lastModified()
-        return when {
-            stamp1 > stamp2 -> 1
-            stamp1 < stamp2 -> -1
-            else -> 0
-        }
-    }
-
-    /**
-     * 创建多级别的目录
-     */
-    fun makeDirs(path: String): Boolean {
-        return makeDirs(File(path))
-    }
-
-    /**
-     * 创建多级别的目录
-     */
-    fun makeDirs(file: File): Boolean {
-        return file.mkdirs()
-    }
+    fun makeDirs(file: File): Boolean = file.mkdirs()
 
     class SortByExtension : Comparator<File> {
 
@@ -717,7 +573,6 @@ object FileUtils {
     }
 
     class SortBySize : Comparator<File> {
-
         override fun compare(f1: File?, f2: File?): Int {
             return if (f1 == null || f2 == null) {
                 if (f1 == null) {

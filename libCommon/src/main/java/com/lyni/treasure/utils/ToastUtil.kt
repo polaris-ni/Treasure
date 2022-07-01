@@ -3,8 +3,7 @@
 package com.lyni.treasure.utils
 
 import android.widget.Toast
-import com.lyni.treasure.ktx.isMainThread
-import com.lyni.treasure.ktx.mainLaunch
+import com.lyni.treasure.ktx.runOnUiThread
 
 /**
  * @date 2022/3/5
@@ -18,12 +17,8 @@ object ToastUtil {
      * @param isLong 是否显示较长时间
      */
     fun showToast(msg: String?, isLong: Boolean = false) {
-        if (isMainThread()) {
+        runOnUiThread {
             Toast.makeText(Utils.getAppContext(), msg, if (isLong) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
-        } else {
-            mainLaunch {
-                Toast.makeText(Utils.getAppContext(), msg, if (isLong) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
-            }
         }
     }
 }

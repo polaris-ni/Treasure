@@ -18,9 +18,9 @@ import java.util.*
  * description 时间工具类
  */
 object DateUtil {
-    private const val FORMAT_TIME_DAY = "yyyy-MM-dd"
-    private const val FORMAT_TIME_MINUTE = "yyyy-MM-dd HH:mm"
-    private const val FORMAT_TIME_SECOND = "yyyy-MM-dd HH:mm:ss"
+    const val FORMAT_TIME_DAY = "yyyy-MM-dd"
+    const val FORMAT_TIME_MINUTE = "yyyy-MM-dd HH:mm"
+    const val FORMAT_TIME_SECOND = "yyyy-MM-dd HH:mm:ss"
 
     @SuppressLint("ConstantLocale")
     private val locale: Locale = Locale.getDefault()
