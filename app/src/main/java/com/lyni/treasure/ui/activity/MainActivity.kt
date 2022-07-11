@@ -3,7 +3,7 @@ package com.lyni.treasure.ui.activity
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import androidx.annotation.RequiresApi
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.lyni.permission.QuickPermission
 import com.lyni.permission.core.Permissions
@@ -15,7 +15,9 @@ import com.lyni.treasure.databinding.ActivityMainBinding
 import com.lyni.treasure.ktx.*
 import com.lyni.treasure.ui.adapter.TestAdapter
 import com.lyni.treasure.utils.Log
+import com.lyni.treasure.utils.showToast
 import com.lyni.treasure.vm.model.TestItem
+import kotlinx.coroutines.delay
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,11 +34,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-//        StatusBarUtil.statusBarLightMode(this)
         setContentView(binding.root)
         immersiveNavigationBar()
         immersiveStatusBar()
@@ -51,7 +52,27 @@ class MainActivity : AppCompatActivity() {
         }
         listener.observe(this.lifecycle)
         initTestItems()
-        binding.rvTestItem.adapter = TestAdapter(testItems)
+        binding.rvTestItem.adapter = TestAdapter().apply {
+            addItems(testItems)
+            setOnItemClickListener { _, _, position ->
+                removeItem(position)
+            }
+            setOnItemLongClickListener { _, item, _ ->
+                showToast("${item.action}")
+            }
+            addFooterView { _, _ ->
+                TextView(this@MainActivity).apply {
+                    text = "hello, my base rv adapter!"
+                }
+            }
+        }
+        mainLaunch {
+            delay(5000)
+            (binding.rvTestItem.adapter as TestAdapter).removeItem(testItems[0])
+            testItems[1].name = "111"
+            (binding.rvTestItem.adapter as TestAdapter).updateItem(testItems[1])
+            (binding.rvTestItem.adapter as TestAdapter).swapItem(0, 1)
+        }
     }
 
     @SuppressLint("MissingPermission")

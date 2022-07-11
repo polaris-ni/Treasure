@@ -6,6 +6,6 @@ package com.lyni.treasure.vm.model
  * description [TestItem]
  */
 data class TestItem(
-    val name: String,
+    var name: String,
     val action: Runnable
 )

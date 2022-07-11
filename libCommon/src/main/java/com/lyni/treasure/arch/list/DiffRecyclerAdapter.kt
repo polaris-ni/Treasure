@@ -9,13 +9,19 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.lyni.treasure.arch.list.animations.ItemAnimation
+import com.lyni.treasure.arch.list.vh.BaseViewHolder
 import com.lyni.treasure.ktx.onLongClick
 
-@Suppress("unused", "MemberVisibilityCanBePrivate")
+@Deprecated("下一版本重做")
 abstract class DiffRecyclerAdapter<ITEM, VB : ViewBinding>(protected val context: Context) :
-    RecyclerView.Adapter<ItemViewHolder>() {
+    RecyclerView.Adapter<BaseViewHolder>() {
 
+    /**
+     * 布局加载器
+     */
     val inflater: LayoutInflater = LayoutInflater.from(context)
+
+    abstract val diffItemCallback: DiffUtil.ItemCallback<ITEM>
 
     private val asyncListDiffer: AsyncListDiffer<ITEM> by lazy {
         AsyncListDiffer(this, diffItemCallback).apply {
@@ -25,18 +31,16 @@ abstract class DiffRecyclerAdapter<ITEM, VB : ViewBinding>(protected val context
         }
     }
 
-    private var itemClickListener: ((holder: ItemViewHolder, item: ITEM) -> Unit)? = null
-    private var itemLongClickListener: ((holder: ItemViewHolder, item: ITEM) -> Boolean)? = null
+    private var itemClickListener: ((holder: BaseViewHolder, item: ITEM) -> Unit)? = null
+    private var itemLongClickListener: ((holder: BaseViewHolder, item: ITEM) -> Boolean)? = null
 
     var itemAnimation: ItemAnimation? = null
 
-    abstract val diffItemCallback: DiffUtil.ItemCallback<ITEM>
-
-    fun setOnItemClickListener(listener: (holder: ItemViewHolder, item: ITEM) -> Unit) {
+    fun setOnItemClickListener(listener: (holder: BaseViewHolder, item: ITEM) -> Unit) {
         itemClickListener = listener
     }
 
-    fun setOnItemLongClickListener(listener: (holder: ItemViewHolder, item: ITEM) -> Boolean) {
+    fun setOnItemLongClickListener(listener: (holder: BaseViewHolder, item: ITEM) -> Boolean) {
         itemLongClickListener = listener
     }
 
@@ -108,11 +112,11 @@ abstract class DiffRecyclerAdapter<ITEM, VB : ViewBinding>(protected val context
         return 0
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val holder = ItemViewHolder(getViewBinding(parent))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
+        val holder = BaseViewHolder(getViewBinding(parent).root)
 
         @Suppress("UNCHECKED_CAST")
-        registerListener(holder, (holder.binding as VB))
+//        registerListener(holder, (holder.binding as VB))
 
         if (itemClickListener != null) {
             holder.itemView.setOnClickListener {
@@ -135,22 +139,22 @@ abstract class DiffRecyclerAdapter<ITEM, VB : ViewBinding>(protected val context
 
     protected abstract fun getViewBinding(parent: ViewGroup): VB
 
-    final override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {}
+    final override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {}
 
     open fun onCurrentListChanged() {}
 
     @Suppress("UNCHECKED_CAST")
     final override fun onBindViewHolder(
-        holder: ItemViewHolder,
+        holder: BaseViewHolder,
         position: Int,
         payloads: MutableList<Any>
     ) {
         getItem(holder.layoutPosition)?.let {
-            convert(holder, (holder.binding as VB), it, payloads)
+//            convert(holder, (holder.binding as VB), it, payloads)
         }
     }
 
-    override fun onViewAttachedToWindow(holder: ItemViewHolder) {
+    override fun onViewAttachedToWindow(holder: BaseViewHolder) {
         super.onViewAttachedToWindow(holder)
         addAnimation(holder)
     }
@@ -167,7 +171,7 @@ abstract class DiffRecyclerAdapter<ITEM, VB : ViewBinding>(protected val context
         }
     }
 
-    private fun addAnimation(holder: ItemViewHolder) {
+    private fun addAnimation(holder: BaseViewHolder) {
         itemAnimation?.let {
             if (it.itemAnimEnabled) {
                 if (!it.itemAnimFirstOnly || holder.layoutPosition > it.itemAnimStartPosition) {
@@ -178,7 +182,7 @@ abstract class DiffRecyclerAdapter<ITEM, VB : ViewBinding>(protected val context
         }
     }
 
-    protected open fun startAnimation(holder: ItemViewHolder, item: ItemAnimation) {
+    protected open fun startAnimation(holder: BaseViewHolder, item: ItemAnimation) {
         item.itemAnimation?.let {
             for (anim in it.getAnimators(holder.itemView)) {
                 anim.setDuration(item.itemAnimDuration).start()
@@ -192,7 +196,7 @@ abstract class DiffRecyclerAdapter<ITEM, VB : ViewBinding>(protected val context
      * 使用getItem(holder.layoutPosition)来获取item
      */
     abstract fun convert(
-        holder: ItemViewHolder,
+        holder: BaseViewHolder,
         binding: VB,
         item: ITEM,
         payloads: MutableList<Any>
@@ -201,6 +205,6 @@ abstract class DiffRecyclerAdapter<ITEM, VB : ViewBinding>(protected val context
     /**
      * 注册事件
      */
-    abstract fun registerListener(holder: ItemViewHolder, binding: VB)
+    abstract fun registerListener(holder: BaseViewHolder, binding: VB)
 
 }

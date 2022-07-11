@@ -1,13 +1,8 @@
 package com.lyni.treasure.ui.adapter
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.lyni.treasure.R
-import com.lyni.treasure.ktx.mainHandler
-import com.lyni.treasure.ktx.onClick
+import com.lyni.treasure.arch.list.BaseVBAdapter
+import com.lyni.treasure.arch.list.vh.DefaultBindingViewHolder
+import com.lyni.treasure.databinding.ItemMainBinding
 import com.lyni.treasure.vm.model.TestItem
 
 /**
@@ -15,27 +10,36 @@ import com.lyni.treasure.vm.model.TestItem
  * @date 2022/7/1
  * description [TestAdapter]
  */
-class TestAdapter(private val data: MutableList<TestItem>) : RecyclerView.Adapter<TestAdapter.TestViewHolder>() {
-    inner class TestViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvItem: TextView
+//class TestAdapter : BaseRVAdapter<TestItem, DefaultBindingViewHolder<ItemMainBinding>>() {
+//
+//    override fun convert(
+//        holder: DefaultBindingViewHolder<ItemMainBinding>,
+//        item: TestItem
+//    ) {
+//        holder.binding.tvName.text = item.name
+//    }
+//
+//    override fun requireNewViewHolder(parent: ViewGroup, viewType: Int): DefaultBindingViewHolder<ItemMainBinding> {
+//        return DefaultBindingViewHolder(ItemMainBinding.inflate(LayoutInflater.from(context), parent, false))
+//    }
+//}
+//class TestAdapter(context: Context) : BaseRVAdapter<TestItem, BaseViewHolder>(context) {
+//    override fun requireNewViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
+//        return BaseViewHolder(inflater.inflate(R.layout.item_main, parent, false))
+//    }
+//
+//    override fun convert(holder: BaseViewHolder, item: TestItem, payloads: MutableList<Any>) {
+//        holder.getView<TextView>(R.id.tvName).text = item.name
+//    }
+//
+//}
 
-        init {
-            tvItem = itemView.findViewById(R.id.tvName)
-        }
+class TestAdapter : BaseVBAdapter<TestItem, ItemMainBinding>() {
 
+    override fun convert(
+        holder: DefaultBindingViewHolder<ItemMainBinding>,
+        item: TestItem
+    ) {
+        holder.binding.tvName.text = item.name
     }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TestViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)
-        return TestViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: TestViewHolder, position: Int) {
-        holder.tvItem.text = data[position].name
-        holder.itemView.onClick {
-            mainHandler.post(data[position].action)
-        }
-    }
-
-    override fun getItemCount(): Int = data.size
 }
