@@ -1,4 +1,4 @@
-package com.lyni.treasure.arch.list
+package com.lyni.treasure.arch.rvx
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,13 +8,13 @@ import androidx.annotation.IntDef
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.lyni.treasure.arch.list.BaseRVAdapter.Companion.ACTION_ADD
-import com.lyni.treasure.arch.list.BaseRVAdapter.Companion.ACTION_ADD_LIST
-import com.lyni.treasure.arch.list.BaseRVAdapter.Companion.ACTION_SWAP
-import com.lyni.treasure.arch.list.animations.ItemAnimation
-import com.lyni.treasure.arch.list.listeners.ItemClickListener
-import com.lyni.treasure.arch.list.listeners.ItemLongClickListener
-import com.lyni.treasure.arch.list.vh.BaseViewHolder
+import com.lyni.treasure.arch.rvx.BaseRVAdapter.Companion.ACTION_ADD
+import com.lyni.treasure.arch.rvx.BaseRVAdapter.Companion.ACTION_ADD_LIST
+import com.lyni.treasure.arch.rvx.BaseRVAdapter.Companion.ACTION_SWAP
+import com.lyni.treasure.arch.rvx.animations.ItemAnimation
+import com.lyni.treasure.arch.rvx.listeners.ItemClickListener
+import com.lyni.treasure.arch.rvx.listeners.ItemLongClickListener
+import com.lyni.treasure.arch.rvx.vh.BaseViewHolder
 import com.lyni.treasure.ktx.onClick
 import com.lyni.treasure.ktx.onLongClick
 import java.util.*
@@ -100,7 +100,7 @@ abstract class BaseRVAdapter<ITEM, VH : BaseViewHolder> : RecyclerView.Adapter<V
     /**
      * 子项动画
      */
-    var itemAnimation: ItemAnimation? = null
+    private var itemAnimation: ItemAnimation? = null
 
     var recyclerViewOrNull: RecyclerView? = null
         private set
@@ -122,6 +122,10 @@ abstract class BaseRVAdapter<ITEM, VH : BaseViewHolder> : RecyclerView.Adapter<V
 
     fun setOnItemLongClickListener(listener: ItemLongClickListener<ITEM, VH>) {
         this.itemLongClickListener = listener
+    }
+
+    fun setItemAnimation(animation: ItemAnimation) {
+        this.itemAnimation = animation
     }
 
     /**
@@ -201,7 +205,7 @@ abstract class BaseRVAdapter<ITEM, VH : BaseViewHolder> : RecyclerView.Adapter<V
     /**
      * 设置列表内容
      *
-     * @param items [ITEM]
+     * @param items [List] of [ITEM], nullable
      */
     @SuppressLint("NotifyDataSetChanged")
     @Synchronized
@@ -220,7 +224,7 @@ abstract class BaseRVAdapter<ITEM, VH : BaseViewHolder> : RecyclerView.Adapter<V
     /**
      * 设置列表内容，支持差异检测
      *
-     * @param items         新列表
+     * @param items         新列表 nullable
      * @param itemCallback  [DiffUtil.ItemCallback] - 差异检测
      * @see [DiffUtil.Callback]
      * @see [DiffUtil.ItemCallback]
@@ -502,6 +506,16 @@ abstract class BaseRVAdapter<ITEM, VH : BaseViewHolder> : RecyclerView.Adapter<V
     }
 
     /**
+     * 拿到某个holder对应的子项，此方法适合在子项的点击事件中调用，确保拿到最新的[ITEM]
+     *
+     * @param holder    [VH]
+     * @return [ITEM] - 子项，没有会抛出异常
+     */
+    fun getItem(holder: VH): ITEM {
+        return items[getItemPosition(holder)]
+    }
+
+    /**
      * 子项
      *
      * @return [List] of [ITEM]
@@ -528,7 +542,7 @@ abstract class BaseRVAdapter<ITEM, VH : BaseViewHolder> : RecyclerView.Adapter<V
      * @param position  位置
      * @return SpanSize
      */
-    protected open fun getSpanSize(viewType: Int, position: Int): Int {
+    open fun getSpanSize(viewType: Int, position: Int): Int {
         return 1
     }
 
@@ -572,9 +586,9 @@ abstract class BaseRVAdapter<ITEM, VH : BaseViewHolder> : RecyclerView.Adapter<V
      *
      * @see [ActionType]
      */
-    open fun onCurrentListChanged(@ActionType action: Int, vararg params: Int) {}
+    protected open fun onCurrentListChanged(@ActionType action: Int, vararg params: Int) {}
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+    final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         return when {
 
             viewType < TYPE_HEADER_VIEW + getHeaderCount() -> requireHeaderView(
@@ -616,7 +630,7 @@ abstract class BaseRVAdapter<ITEM, VH : BaseViewHolder> : RecyclerView.Adapter<V
         initializer: EdgeView
     ): VH {
         @Suppress("UNCHECKED_CAST")
-        return BaseViewHolder(initializer.initView(parent, viewType)) as VH
+        return BaseViewHolder(initializer.create(parent, viewType)) as VH
     }
 
     /**
@@ -633,7 +647,7 @@ abstract class BaseRVAdapter<ITEM, VH : BaseViewHolder> : RecyclerView.Adapter<V
         initializer: EdgeView
     ): VH {
         @Suppress("UNCHECKED_CAST")
-        return BaseViewHolder(initializer.initView(parent, viewType)) as VH
+        return BaseViewHolder(initializer.create(parent, viewType)) as VH
     }
 
     final override fun onBindViewHolder(holder: VH, position: Int) {
@@ -706,7 +720,7 @@ abstract class BaseRVAdapter<ITEM, VH : BaseViewHolder> : RecyclerView.Adapter<V
      *
      * @param layoutPosition  位置
      */
-    private fun getItemPosition(layoutPosition: Int): Int {
+    fun getItemPosition(layoutPosition: Int): Int {
         return layoutPosition - getHeaderCount()
     }
 
@@ -716,7 +730,7 @@ abstract class BaseRVAdapter<ITEM, VH : BaseViewHolder> : RecyclerView.Adapter<V
      * @param holder    [BaseViewHolder]
      * @return [Int] - position
      */
-    private fun getItemPosition(holder: VH): Int {
+    fun getItemPosition(holder: VH): Int {
         return holder.layoutPosition - getHeaderCount()
     }
 
@@ -773,7 +787,7 @@ abstract class BaseRVAdapter<ITEM, VH : BaseViewHolder> : RecyclerView.Adapter<V
      *
      * @param holder    [VH]
      */
-    open fun registerListener(holder: VH) {
+    protected open fun registerListener(holder: VH) {
         itemClickListener?.let { listener ->
             holder.itemView.onClick {
                 val position = getItemPosition(holder)

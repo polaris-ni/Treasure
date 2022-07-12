@@ -1,6 +1,6 @@
-package com.lyni.treasure.arch.list.listeners
+package com.lyni.treasure.arch.rvx.listeners
 
-import com.lyni.treasure.arch.list.vh.BaseViewHolder
+import com.lyni.treasure.arch.rvx.vh.BaseViewHolder
 
 /**
  * @author Liangyong Ni

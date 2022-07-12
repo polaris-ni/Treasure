@@ -14,6 +14,6 @@
         android:layout_height="wrap_content"
         android:overScrollMode="never"
         android:scrollbars="none"
-        app:layoutManager=".arch.list.SafeLinearLayoutManager" />
+        app:layoutManager=".arch.rvx.SafeLinearLayoutManager" />
 
 </LinearLayout>

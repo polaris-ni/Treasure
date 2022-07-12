@@ -1,4 +1,4 @@
-package com.lyni.treasure.arch.list.animations
+package com.lyni.treasure.arch.rvx.animations
 
 /**
  * @author Liangyong Ni

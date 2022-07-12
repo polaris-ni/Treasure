@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package com.lyni.treasure.arch.list.vh
+package com.lyni.treasure.arch.rvx.vh
 
 import android.view.View
 import androidx.annotation.IdRes

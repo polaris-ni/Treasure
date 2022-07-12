@@ -1,7 +1,7 @@
 package com.lyni.treasure.ui.adapter
 
-import com.lyni.treasure.arch.list.BaseVBAdapter
-import com.lyni.treasure.arch.list.vh.DefaultBindingViewHolder
+import com.lyni.treasure.arch.rvx.BaseVBAdapter
+import com.lyni.treasure.arch.rvx.vh.DefaultBindingViewHolder
 import com.lyni.treasure.databinding.ItemMainBinding
 import com.lyni.treasure.vm.model.TestItem
 

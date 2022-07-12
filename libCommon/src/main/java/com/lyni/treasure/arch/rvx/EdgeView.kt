@@ -1,4 +1,4 @@
-package com.lyni.treasure.arch.list
+package com.lyni.treasure.arch.rvx
 
 import android.view.View
 import android.view.ViewGroup
@@ -10,5 +10,5 @@ import android.view.ViewGroup
  * @see [BaseRVAdapter]
  */
 fun interface EdgeView {
-    fun initView(parent: ViewGroup, viewType: Int): View
+    fun create(parent: ViewGroup, viewType: Int): View
 }

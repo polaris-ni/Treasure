@@ -1,9 +1,9 @@
-package com.lyni.treasure.arch.list
+package com.lyni.treasure.arch.rvx
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
-import com.lyni.treasure.arch.list.vh.DefaultBindingViewHolder
+import com.lyni.treasure.arch.rvx.vh.DefaultBindingViewHolder
 import java.lang.reflect.Method
 import java.lang.reflect.ParameterizedType
 

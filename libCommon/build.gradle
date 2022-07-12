@@ -30,7 +30,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.lyni.treasure'
                 artifactId = 'treasure'
-                version = '1.0.0-alpha7'
+                version = '1.0.0-alpha8'
             }
         }
     }

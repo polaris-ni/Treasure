@@ -1,4 +1,4 @@
-package com.lyni.treasure.arch.list.vh
+package com.lyni.treasure.arch.rvx.vh
 
 import androidx.viewbinding.ViewBinding
 
