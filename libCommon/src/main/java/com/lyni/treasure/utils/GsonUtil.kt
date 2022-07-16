@@ -10,8 +10,8 @@ import com.google.gson.JsonParser
 
 /**
  * @author Liangyong Ni
- * description GsonUtil
  * @date 2022/3/19
+ * description [GsonUtil] com.lyni.treasure.ktx.JsonKtx
  */
 object GsonUtil {
     /**

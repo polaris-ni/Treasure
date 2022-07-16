@@ -2,7 +2,6 @@
 
 package com.lyni.treasure.utils
 
-import android.annotation.SuppressLint
 import com.lyni.treasure.ktx.nowTime
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,67 +17,77 @@ object DateUtil {
     const val FORMAT_TIME_MINUTE = "yyyy-MM-dd HH:mm"
     const val FORMAT_TIME_SECOND = "yyyy-MM-dd HH:mm:ss"
 
-    @SuppressLint("ConstantLocale")
-    private val locale: Locale = Locale.getDefault()
-
-    fun getLocale() = locale
+    @JvmStatic
+    fun getLocale(): Locale = Locale.getDefault()
 
     @JvmStatic
-    fun getTimeWhitStamp(timeStamp: Long, format: String = FORMAT_TIME_SECOND): String {
-        val sdf = SimpleDateFormat(format, locale)
+    fun getTimeWhitStamp(timeStamp: Long, format: String): String {
+        val sdf = SimpleDateFormat(format, getLocale())
         return sdf.format(timeStamp)
     }
 
+    @JvmStatic
     fun dayFormat(timeStamp: Long) = getTimeWhitStamp(timeStamp, FORMAT_TIME_DAY)
 
+    @JvmStatic
     fun minuteFormat(timeStamp: Long) = getTimeWhitStamp(timeStamp, FORMAT_TIME_MINUTE)
 
+    @JvmStatic
     fun secondFormat(timeStamp: Long) = getTimeWhitStamp(timeStamp, FORMAT_TIME_SECOND)
 
+    @JvmStatic
     fun getTimeStamp(year: Int, monthOfYear: Int, dayOfMonth: Int, hour: Int, minute: Int): Long {
         val calendar = Calendar.getInstance()
         calendar.set(year, monthOfYear, dayOfMonth, hour, minute)
         return calendar.timeInMillis
     }
 
+    @JvmStatic
     fun getSecond(timeStamp: Long): Int {
         val calendar = Calendar.getInstance()
         calendar.time = Date(timeStamp)
         return calendar.get(Calendar.SECOND)
     }
 
+    @JvmStatic
     fun getMinute(timeStamp: Long): Int {
         val calendar = Calendar.getInstance()
         calendar.time = Date(timeStamp)
         return calendar.get(Calendar.MINUTE)
     }
 
+    @JvmStatic
     fun getHour(timeStamp: Long): Int {
         val calendar = Calendar.getInstance()
         calendar.time = Date(timeStamp)
         return calendar.get(Calendar.HOUR_OF_DAY)
     }
 
+    @JvmStatic
     fun getDay(timeStamp: Long): Int {
         val calendar = Calendar.getInstance()
         calendar.time = Date(timeStamp)
         return calendar.get(Calendar.DAY_OF_MONTH)
     }
 
+    @JvmStatic
     fun getMonth(timeStamp: Long): Int {
         val calendar = Calendar.getInstance()
         calendar.time = Date(timeStamp)
         return calendar.get(Calendar.MONTH)
     }
 
+    @JvmStatic
     fun getRealMonth(timeStamp: Long) = getMonth(timeStamp) + 1
 
+    @JvmStatic
     fun getYear(timeStamp: Long): Int {
         val calendar = Calendar.getInstance()
         calendar.time = Date(timeStamp)
         return calendar.get(Calendar.YEAR)
     }
 
+    @JvmStatic
     fun isToday(date: Long, compareTime: Long = nowTime()): Boolean {
         val serverCalendar = Calendar.getInstance()
         serverCalendar.timeInMillis = compareTime
@@ -88,6 +97,7 @@ object DateUtil {
                 serverCalendar.get(Calendar.DAY_OF_YEAR) == purposeCalendar.get(Calendar.DAY_OF_YEAR)
     }
 
+    @JvmStatic
     fun isYesterday(date: Long, compareTime: Long = nowTime()): Boolean {
         val instance = Calendar.getInstance()
         instance.timeInMillis = date
@@ -97,6 +107,7 @@ object DateUtil {
         return d2 - d1 == 1
     }
 
+    @JvmStatic
     fun isTomorrow(date: Long, compareTime: Long = nowTime()): Boolean {
         val instance = Calendar.getInstance()
         instance.timeInMillis = date
@@ -110,6 +121,7 @@ object DateUtil {
      * 根据生日获取周岁
      * @param birthday 生日
      */
+    @JvmStatic
     fun getCurrentAge(birthday: Long): Int {
         //当前时间
         val curr = Calendar.getInstance()

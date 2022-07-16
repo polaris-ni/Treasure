@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.lyni.treasure.utils
 
 import android.content.Intent
@@ -15,12 +17,14 @@ object BaseInfoUtil {
     /**
      * 获取电量
      */
+    @JvmStatic
     fun getSysBattery(): Int {
         val iFilter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         val batteryStatus = appContext.applicationContext.registerReceiver(null, iFilter)
         return batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
     }
 
+    @JvmStatic
     fun isPad(): Boolean {
         return (appContext.resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE
     }

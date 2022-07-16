@@ -5,7 +5,7 @@ package com.lyni.treasure.arch.network
  * @date 2022/6/30
  * description [NetworkStatusListener]当接收到网络连接广播就会回调
  */
-interface NetworkStatusListener {
+fun interface NetworkStatusListener {
 
     /**
      * [onReceiveStatus] will be called when network changed or listener is registered firstly

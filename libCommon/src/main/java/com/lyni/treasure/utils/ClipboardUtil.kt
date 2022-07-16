@@ -13,12 +13,25 @@ import com.lyni.treasure.ktx.appContext
  * description [ClipboardUtil]
  */
 object ClipboardUtil {
-    fun copyToClipboard(text: String, action: (() -> Unit)? = null) {
-        val clipData = ClipData.newPlainText(null, text)
+
+    /**
+     * 将[CharSequence]复制到剪贴板中，可设置[label]，默认为null
+     *
+     * @param text  [CharSequence] - 内容
+     * @param label [CharSequence] - 标签
+     */
+    @JvmStatic
+    fun copyToClipboard(text: CharSequence, label: CharSequence? = null) {
+        val clipData = ClipData.newPlainText(label, text)
         getClipboardManager().setPrimaryClip(clipData)
-        action?.invoke()
     }
 
+    /**
+     * 从剪贴板中获取内容
+     *
+     * @return  [String] - 内容，没有则返回空
+     */
+    @JvmStatic
     fun getTextFromClipboard(): String? {
         getClipboardManager().primaryClip?.let {
             if (it.itemCount > 0) {
@@ -28,5 +41,9 @@ object ClipboardUtil {
         return null
     }
 
+    /**
+     * 获取[ClipboardManager]
+     */
+    @JvmStatic
     fun getClipboardManager() = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 }

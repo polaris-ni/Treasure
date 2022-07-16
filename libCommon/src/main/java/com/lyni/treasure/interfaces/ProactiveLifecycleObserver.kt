@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleObserver
  * @author Liangyong Ni
  * description [ProactiveLifecycleObserver]. Only for calling [observe] proactively.
  */
+@Suppress("unused")
 interface ProactiveLifecycleObserver : LifecycleObserver {
     /**
      * Call the method to add an observer for lifecycle proactively.

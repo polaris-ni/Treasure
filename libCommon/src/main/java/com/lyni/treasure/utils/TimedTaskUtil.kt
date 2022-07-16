@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.lyni.treasure.utils
 
 import com.lyni.treasure.ktx.mainLaunch
@@ -19,12 +21,12 @@ import kotlinx.coroutines.flow.*
  * @param total     总时间(毫秒)
  * @param interval  更新间隔(毫秒)
  * @param onTick    更新回调
- * @param onFinish  正常完成时回调
+ * @param onFinish  完成时回调，发生异常传入的参数不为空
  * @return [Job] - 用来控制任务
  */
-fun countDownCancellable(
+fun countDown(
     total: Long, scope: CoroutineScope, interval: Long = 1000,
-    onTick: ((Long) -> Unit)? = null, onFinish: (() -> Unit)?
+    onTick: ((Long) -> Unit)? = null, onFinish: ((Throwable?) -> Unit)?
 ): Job = flow {
     for (i in total downTo 0 step interval) {
         emit(i)
@@ -32,9 +34,7 @@ fun countDownCancellable(
     }
 }.flowOn(Dispatchers.Main)
     .onCompletion { cause ->
-        if (cause == null) {
-            onFinish?.invoke()
-        }
+        onFinish?.invoke(cause)
     }
     .onEach { onTick?.invoke(it) }
     .launchIn(scope)
