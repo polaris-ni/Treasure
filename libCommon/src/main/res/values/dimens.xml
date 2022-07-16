@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="large_title">28sp</dimen>
-    <dimen name="title">24sp</dimen>
-    <dimen name="small_title">20sp</dimen>
-    <dimen name="content_1">18sp</dimen>
-    <dimen name="content_2">16sp</dimen>
-    <dimen name="footnote">14sp</dimen>
-    <dimen name="small_footnote">12sp</dimen>
+    <!--    <dimen name="large_title">28sp</dimen>-->
+    <!--    <dimen name="title">24sp</dimen>-->
+    <!--    <dimen name="small_title">20sp</dimen>-->
+    <!--    <dimen name="content_1">18sp</dimen>-->
+    <!--    <dimen name="content_2">16sp</dimen>-->
+    <!--    <dimen name="footnote">14sp</dimen>-->
+    <!--    <dimen name="small_footnote">12sp</dimen>-->
 
     <dimen name="dimen_0">0dp</dimen>
     <dimen name="dimen_0_5">0.5dp</dimen>

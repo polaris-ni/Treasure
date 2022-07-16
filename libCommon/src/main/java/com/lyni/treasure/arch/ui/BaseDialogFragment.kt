@@ -1,11 +1,13 @@
 package com.lyni.treasure.arch.ui
 
 import android.app.Dialog
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
+import com.lyni.treasure.ktx.checkSDK
 import com.lyni.treasure.ktx.nowTime
 import java.lang.reflect.ParameterizedType
 
@@ -85,8 +87,9 @@ abstract class BaseDialogFragment<VB : ViewBinding> : DialogFragment() {
     open fun initListener() {}
 
     //默认style-可以加动画相关的style
-    // TODO:  
-    open fun getStyle(): Int = android.R.style.ThemeOverlay_Material_Dialog
+    open fun getStyle(): Int = checkSDK(Build.VERSION_CODES.M) {
+        android.R.style.ThemeOverlay_Material_Dialog
+    }.getOrElse { android.R.style.Theme_Dialog }
 
     //动画效果
     open fun getAnim(): Int? = null

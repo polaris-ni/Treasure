@@ -13,7 +13,7 @@ import android.os.Build
  */
 fun nowTime() = System.currentTimeMillis()
 
-inline fun sdkCheck(targetSdkVersion: Int, action: () -> Unit) = runCatching {
+inline fun <T> checkSDK(targetSdkVersion: Int, action: () -> T) = runCatching {
     if (Build.VERSION.SDK_INT >= targetSdkVersion) {
         action.invoke()
     } else {

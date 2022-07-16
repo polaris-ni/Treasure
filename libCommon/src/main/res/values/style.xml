@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="tv_title_big">
-        <item name="android:textSize">@dimen/title</item>
-        <item name="android:textColor">@color/color_black</item>
-    </style>
+    <!--    <style name="tv_title_big">-->
+    <!--        <item name="android:textSize">@dimen/title</item>-->
+    <!--        <item name="android:textColor">@color/color_black</item>-->
+    <!--    </style>-->
 
-    <style name="tv_title_small">
-        <item name="android:textSize">@dimen/small_title</item>
-        <item name="android:textColor">@color/color_black</item>
-    </style>
+    <!--    <style name="tv_title_small">-->
+    <!--        <item name="android:textSize">@dimen/small_title</item>-->
+    <!--        <item name="android:textColor">@color/color_black</item>-->
+    <!--    </style>-->
 
-    <style name="tv_content_primary">
-        <item name="android:textSize">@dimen/content_1</item>
-        <item name="android:textColor">@color/color_black</item>
-    </style>
+    <!--    <style name="tv_content_primary">-->
+    <!--        <item name="android:textSize">@dimen/content_1</item>-->
+    <!--        <item name="android:textColor">@color/color_black</item>-->
+    <!--    </style>-->
 
-    <style name="tv_content_second">
-        <item name="android:textSize">@dimen/content_2</item>
-        <item name="android:textColor">@color/color_gray</item>
-    </style>
+    <!--    <style name="tv_content_second">-->
+    <!--        <item name="android:textSize">@dimen/content_2</item>-->
+    <!--        <item name="android:textColor">@color/color_gray</item>-->
+    <!--    </style>-->
 </resources>

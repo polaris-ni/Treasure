@@ -21,7 +21,7 @@ object Utils {
     fun getAppContext() = applicationContext
 
     /**
-     * 打开日志的Debug模式，默认关闭
+     * 打开Debug模式，默认关闭
      */
     fun openDebug() {
         isDebug = true

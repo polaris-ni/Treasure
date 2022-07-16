@@ -92,16 +92,16 @@ class MainActivity : AppCompatActivity() {
             add(TestItem("是否使用VPN") { Log.e(TAG, "是否使用VPN: ${NetworkUtil.isUsingVPN()}") })
             add(TestItem("是否使用数据") { Log.e(TAG, "是否使用数据: ${NetworkUtil.isUsingCellular()}") })
             add(TestItem("是否使用4G") { Log.e(TAG, "是否使用4G: ${NetworkUtil.is4G()}") })
-            sdkCheck(Build.VERSION_CODES.Q) {
+            checkSDK(Build.VERSION_CODES.Q) {
                 add(TestItem("是否使用5G") { Log.e(TAG, "是否使用5G: ${NetworkUtil.is5G()}") })
             }.onFailure { Log.e(TAG, "initTestItems: 不支持5G") }
             add(TestItem("是否启用Wifi") { Log.e(TAG, "是否启用Wifi: ${NetworkUtil.isWifiEnabled()}") })
             add(TestItem("是否连接Wifi") { Log.e(TAG, "是否连接Wifi: ${NetworkUtil.isWifiConnected()}") })
             add(TestItem("是否连接以太网") { Log.e(TAG, "是否连接以太网: ${NetworkUtil.isEthernet()}") })
-            sdkCheck(Build.VERSION_CODES.M) {
+            checkSDK(Build.VERSION_CODES.M) {
                 add(TestItem("是否通过蓝牙联网") { Log.e(TAG, "是否通过蓝牙联网: ${NetworkUtil.isBluetooth()}") })
             }
-            sdkCheck(Build.VERSION_CODES.O_MR1) {
+            checkSDK(Build.VERSION_CODES.O_MR1) {
                 add(TestItem("是否通过LoWPAN联网") { Log.e(TAG, "是否通过LoWPAN联网: ${NetworkUtil.isLoWPAN()}") })
             }
             add(TestItem("获取network operator 名称") {
