@@ -9,7 +9,8 @@ import com.lyni.treasure.utils.Utils
  * @author Liangyong Ni
  * description TreasureInitializer
  */
-class TreasureInitializer : Initializer<Unit> {
+@Suppress("unused")
+internal class TreasureInitializer : Initializer<Unit> {
     override fun create(context: Context) {
         Utils.init(context)
     }
