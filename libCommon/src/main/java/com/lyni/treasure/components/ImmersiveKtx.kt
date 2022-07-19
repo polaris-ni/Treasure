@@ -3,6 +3,7 @@
 package com.lyni.treasure.components
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
@@ -22,6 +23,11 @@ import com.lyni.treasure.common.R
  * @date 2022/7/1
  * description Immersive Config
  */
+/**
+ * 设置状态栏文字颜色，不会修改背景颜色，使用[setStatusBarColor]修改状态栏颜色
+ *
+ * @param isLightingColor   false表示文字颜色设置为浅色，true为深色，
+ */
 fun Activity.setLightStatusBar(isLightingColor: Boolean) {
     val window = this.window
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -31,10 +37,14 @@ fun Activity.setLightStatusBar(isLightingColor: Boolean) {
         } else {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         }
-        window.statusBarColor = Color.BLACK
     }
 }
 
+/**
+ * 将导航栏设置为浅色
+ *
+ * @param isLightingColor   true为浅色
+ */
 fun Activity.setLightNavigationBar(isLightingColor: Boolean) {
     val window = this.window
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isLightingColor) {
@@ -44,7 +54,7 @@ fun Activity.setLightNavigationBar(isLightingColor: Boolean) {
 }
 
 /**
- * 必须在Activity的onCreate时调用
+ * 沉浸式状态栏，必须在[Activity.onCreate]时调用
  */
 fun Activity.immersiveStatusBar() {
     val view = (window.decorView as ViewGroup).getChildAt(0)
@@ -86,9 +96,9 @@ fun Activity.immersiveStatusBar() {
 }
 
 /**
- * 必须在Activity的onCreate时调用
+ * 沉浸式导航栏，必须在[Activity.onCreate]时调用
  */
-fun Activity.immersiveNavigationBar(callback: (() -> Unit)? = null) {
+fun Activity.immersiveNavigationBar() {
     val view = (window.decorView as ViewGroup).getChildAt(0)
     view.addOnLayoutChangeListener { v, _, _, _, _, _, _, _, _ ->
         val lp = view.layoutParams as FrameLayout.LayoutParams
@@ -109,7 +119,6 @@ fun Activity.immersiveNavigationBar(callback: (() -> Unit)? = null) {
     val heightLiveData = MutableLiveData<Int>()
     heightLiveData.value = 0
     window.decorView.setTag(R.id.navigation_height_live_data, heightLiveData)
-    callback?.invoke()
 
     window.decorView.findViewById(R.id.navigation_bar_view) ?: View(window.context).apply {
         id = R.id.navigation_bar_view
@@ -148,7 +157,8 @@ fun Activity.immersiveNavigationBar(callback: (() -> Unit)? = null) {
 }
 
 /**
- * 当设置了immersiveStatusBar时，如需使用状态栏，可调佣该函数
+ * 是否将布局延伸到状态栏
+ * @param fit   true表示预留状态栏，false表示将布局延伸到状态栏内
  */
 fun Activity.fitStatusBar(fit: Boolean) {
     val content = findViewById<View>(android.R.id.content)
@@ -159,6 +169,10 @@ fun Activity.fitStatusBar(fit: Boolean) {
     }
 }
 
+/**
+ * 是否将布局延伸到导航栏
+ * @param fit   true表示预留导航栏，false表示将布局延伸到导航栏内
+ */
 fun Activity.fitNavigationBar(fit: Boolean) {
     val content = findViewById<View>(android.R.id.content)
     if (fit) {
@@ -175,8 +189,9 @@ fun Activity.fitNavigationBar(fit: Boolean) {
     }
 }
 
-val Activity.isImmersiveNavigationBar: Boolean
-    get() = window.attributes.flags and WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION != 0
+fun Activity.isImmersiveNavigationBar(): Boolean {
+    return window.attributes.flags and WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION != 0
+}
 
 fun Context.getStatusBarHeight(): Int {
     val resourceId =
@@ -218,6 +233,61 @@ fun Activity.getNavigationBarHeightLiveData(): LiveData<Int> {
         window.decorView.setTag(R.id.navigation_height_live_data, liveData)
     }
     return liveData
+}
+
+/**
+ * 设置状态栏文字颜色，不会修改背景颜色
+ *
+ * @param isLightingColor   false表示文字颜色设置为浅色，true为深色，
+ */
+fun Dialog.setLightStatusBar(isLightingColor: Boolean) {
+    val window = this.window ?: return
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (isLightingColor) {
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        } else {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        }
+    }
+}
+
+fun Dialog.setLightNavigationBar(isLightingColor: Boolean) {
+    val window = this.window ?: return
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && isLightingColor) {
+        window.decorView.systemUiVisibility =
+            window.decorView.systemUiVisibility or if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR else 0
+    }
+}
+
+fun Dialog.immersiveStatusBar() {
+    val window = this.window ?: return
+    (window.decorView as ViewGroup).setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
+        override fun onChildViewAdded(parent: View?, child: View?) {
+            if (child?.id == android.R.id.statusBarBackground) {
+                child.scaleX = 0f
+            }
+        }
+
+        override fun onChildViewRemoved(parent: View?, child: View?) {
+        }
+    })
+}
+
+fun Dialog.immersiveNavigationBar() {
+    val window = this.window ?: return
+    (window.decorView as ViewGroup).setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
+        override fun onChildViewAdded(parent: View?, child: View?) {
+            if (child?.id == android.R.id.navigationBarBackground) {
+                child.scaleX = 0f
+            } else if (child?.id == android.R.id.statusBarBackground) {
+                child.scaleX = 0f
+            }
+        }
+
+        override fun onChildViewRemoved(parent: View?, child: View?) {
+        }
+    })
 }
 
 private const val STATUS_BAR_MASK_COLOR = 0x7F000000

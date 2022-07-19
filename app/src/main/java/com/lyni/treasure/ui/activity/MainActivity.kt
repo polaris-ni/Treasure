@@ -1,8 +1,10 @@
 package com.lyni.treasure.ui.activity
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.lyni.permission.QuickPermission
@@ -10,9 +12,11 @@ import com.lyni.permission.core.Permissions
 import com.lyni.treasure.arch.network.NetworkChangeLifecycleListener
 import com.lyni.treasure.arch.network.NetworkType
 import com.lyni.treasure.arch.network.NetworkUtil
-import com.lyni.treasure.components.*
 import com.lyni.treasure.databinding.ActivityMainBinding
-import com.lyni.treasure.ktx.*
+import com.lyni.treasure.ktx.checkSDK
+import com.lyni.treasure.ktx.ioLaunch
+import com.lyni.treasure.ktx.mainHandler
+import com.lyni.treasure.ktx.mainLaunch
 import com.lyni.treasure.ui.adapter.TestAdapter
 import com.lyni.treasure.utils.Log
 import com.lyni.treasure.utils.showToast
@@ -39,17 +43,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        immersiveNavigationBar()
-        immersiveStatusBar()
-        fitStatusBar(true)
-        fitNavigationBar(true)
-        isDarkTheme().positive {
-            setLightStatusBar(false)
-            setLightNavigationBar(false)
-        }.otherwise {
-            setLightStatusBar(true)
-            setLightNavigationBar(true)
-        }
+//        immersiveNavigationBar()
+//        immersiveStatusBar()
+//        fitStatusBar(true)
+//        fitNavigationBar(true)
+//        setNavigationBarColor(Color.BLUE)
+//        setLightStatusBar(!isDarkTheme())
+//        setLightNavigationBar(false)
         listener.observe(this.lifecycle)
         initTestItems()
         binding.rvTestItem.adapter = TestAdapter().apply {
@@ -61,9 +61,15 @@ class MainActivity : AppCompatActivity() {
                 showToast("${item.action}")
             }
             addFooterView { _, _ ->
-                TextView(this@MainActivity).apply {
-                    text = "hello, my base rv adapter!"
+                FrameLayout(this@MainActivity).apply {
+                    addView(TextView(this@MainActivity).apply {
+                        text = "hello, my base rv adapter!"
+                    })
+                    setBackgroundColor(Color.BLUE)
+//                    layoutParams =
+//                        ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                 }
+
             }
         }
         mainLaunch {
