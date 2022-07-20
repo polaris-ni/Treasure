@@ -5,6 +5,12 @@ plugins {
 
 apply from: '../common_apply.gradle'
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+    }
+}
+
 dependencies {
     compileOnly 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
     compileOnly 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
@@ -30,7 +36,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.lyni.treasure'
                 artifactId = 'treasure'
-                version = '1.0.0-alpha10'
+                version = '1.0.0-alpha11'
             }
         }
     }

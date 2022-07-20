@@ -8,32 +8,72 @@ import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
 /**
- * 具有异常处理机制并在主线程执行的协程启动器，适用于更新UI等操作
- * @param action 执行的协程体
- * @return Job
+ * Coroutine callback
+ *
+ * @property dispatcher [CoroutineDispatcher]
+ * @property block      coroutine body
+ * @property onError    handle exception
+ * @constructor Create empty Coroutine callback
  */
-fun CoroutineScope.safeLaunch(action: suspend () -> Unit = {}): Job {
-    return launch(CoroutineExceptionHandler { _, throwable -> throwable.printStackTrace() } + Dispatchers.Main) {
-        action.invoke()
+data class CoroutineCallback(
+    var dispatcher: CoroutineDispatcher? = null,
+    var block: suspend () -> Unit = {},
+    var onError: (Throwable) -> Unit = { it.printStackTrace() }
+)
+
+/**
+ * 带异常捕捉的[CoroutineScope.launch]
+ *
+ * @param init  [CoroutineCallback]
+ * @return  [Job]
+ */
+fun CoroutineScope.launchCatching(init: CoroutineCallback.() -> Unit): Job {
+    val callback = CoroutineCallback(dispatcher = Dispatchers.Main).apply { this.init() }
+    return launch(CoroutineExceptionHandler { _, throwable ->
+        callback.onError(throwable)
+    } + (callback.dispatcher ?: Dispatchers.Main)) {
+        callback.block()
     }
 }
 
+/**
+ * Safe launch
+ *
+ * @param coroutineDispatcher   [CoroutineDispatcher]
+ * @param action                [CoroutineCallback.block]
+ * @return  [Job]
+ */
+fun CoroutineScope.safeLaunch(coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main, action: suspend () -> Unit) =
+    launchCatching {
+        dispatcher = coroutineDispatcher
+        block = action
+    }
+
+/**
+ * [CoroutineScope] with [Dispatchers.Main]
+ */
 val mainScope: CoroutineScope = CoroutineScope(
     SupervisorJob()
             + Dispatchers.Main.immediate
-            + CoroutineExceptionHandlerWithReleaseUploadAndDebugThrow
+            + DefaultCoroutineExceptionHandler
 )
 
+/**
+ * [CoroutineScope] with [Dispatchers.IO]
+ */
 val ioScope: CoroutineScope = CoroutineScope(
     SupervisorJob()
             + Dispatchers.IO
-            + CoroutineExceptionHandlerWithReleaseUploadAndDebugThrow
+            + DefaultCoroutineExceptionHandler
 )
 
+/**
+ * [CoroutineScope] with [Dispatchers.Default]
+ */
 val calScope: CoroutineScope = CoroutineScope(
     SupervisorJob()
             + Dispatchers.Default
-            + CoroutineExceptionHandlerWithReleaseUploadAndDebugThrow
+            + DefaultCoroutineExceptionHandler
 )
 
 /**
@@ -69,7 +109,7 @@ fun calLaunch(action: suspend (CoroutineScope) -> Unit) =
 /**
  * 设置协程异常策略的上下文元素
  */
-object CoroutineExceptionHandlerWithReleaseUploadAndDebugThrow
+internal object DefaultCoroutineExceptionHandler
     : AbstractCoroutineContextElement(CoroutineExceptionHandler), CoroutineExceptionHandler {
     override fun handleException(context: CoroutineContext, exception: Throwable) {
         if (exception !is CancellationException) {//如果是SupervisorJob就不会传播取消异常，而Job会传播
