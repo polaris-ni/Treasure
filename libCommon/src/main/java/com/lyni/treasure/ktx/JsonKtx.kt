@@ -7,6 +7,8 @@ import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.lyni.treasure.utils.GsonUtil
+import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Type
 
 /**
  * @date 2022/5/25
@@ -73,15 +75,16 @@ inline fun <reified T> String.jsonToObjectOrNull(): T? = try {
  * @throws JsonParseException
  */
 @Throws(JsonSyntaxException::class, JsonParseException::class)
-fun <T> String.jsonToList(): List<T> = GsonUtil.getGsonInstance().fromJson(this, object : TypeToken<List<T>>() {}.type)
+inline fun <reified T> String.jsonToList(): List<T> =
+    GsonUtil.getGsonInstance().fromJson(this, ParameterizedTypeImpl(T::class.java)) as List<T>
 
 /**
  * json字符串转成list，转换失败则返回空值
  *
  * @return list<T> or null
  */
-fun <T> String.jsonToListOrNull(): List<T>? = try {
-    GsonUtil.getGsonInstance().fromJson(this, object : TypeToken<List<T>>() {}.type)
+inline fun <reified T> String.jsonToListOrNull(): List<T>? = try {
+    jsonToList()
 } catch (e: Exception) {
     e.printOnDebug()
     null
@@ -165,4 +168,12 @@ fun <T> String.jsonToListOfMapOrNull(): MutableList<HashMap<String, T>>? = try {
 } catch (e: Exception) {
     e.printOnDebug()
     null
+}
+
+class ParameterizedTypeImpl(private val clazz: Class<*>) : ParameterizedType {
+    override fun getRawType(): Type = List::class.java
+
+    override fun getOwnerType(): Type? = null
+
+    override fun getActualTypeArguments(): Array<Type> = arrayOf(clazz)
 }

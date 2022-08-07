@@ -13,10 +13,7 @@ import com.lyni.treasure.arch.network.NetworkChangeLifecycleListener
 import com.lyni.treasure.arch.network.NetworkType
 import com.lyni.treasure.arch.network.NetworkUtil
 import com.lyni.treasure.databinding.ActivityMainBinding
-import com.lyni.treasure.ktx.checkSDK
-import com.lyni.treasure.ktx.ioLaunch
-import com.lyni.treasure.ktx.mainHandler
-import com.lyni.treasure.ktx.mainLaunch
+import com.lyni.treasure.ktx.*
 import com.lyni.treasure.ui.adapter.TestAdapter
 import com.lyni.treasure.utils.Log
 import com.lyni.treasure.utils.showToast
@@ -79,6 +76,11 @@ class MainActivity : AppCompatActivity() {
             (binding.rvTestItem.adapter as TestAdapter).updateItem(testItems[1])
             (binding.rvTestItem.adapter as TestAdapter).swapItem(0, 1)
         }
+        Log.e(TAG, "onCreate: ${"[1,2,3]".jsonToList<Int>()}")
+        "{\"goods_id\":\"140861765\",\"cat_id\":\"210\",\"goods_sn\":\"171073501\",\"goods_sn_back\":\"171073501\",\"goods_upc\":null,\"goods_name\":\"Lace-Up Boxer Swimming Trunks\"}".jsonToMap<Any>()
+            .apply {
+                Log.e(TAG, "onCreate: $this")
+            }
     }
 
     @SuppressLint("MissingPermission")
