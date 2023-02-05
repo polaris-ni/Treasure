@@ -5,6 +5,10 @@ plugins {
 
 apply from: '../common_apply.gradle'
 
+android {
+    namespace 'com.lyni.treasure.common'
+}
+
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
     kotlinOptions {
         freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
@@ -12,20 +16,18 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 }
 
 dependencies {
-    compileOnly 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
-    compileOnly 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
+    compileOnly 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    compileOnly 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     // recycler view
     compileOnly 'androidx.recyclerview:recyclerview:1.2.1'
     // kotlin coroutine
     compileOnly 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.3'
     // mmkv
-    compileOnly 'com.tencent:mmkv:1.2.13'
-    // gson
     compileOnly 'com.google.code.gson:gson:2.9.0'
-    compileOnly "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
-    compileOnly 'androidx.core:core-ktx:1.8.0'
-    compileOnly 'androidx.appcompat:appcompat:1.4.2'
-    compileOnly 'com.google.android.material:material:1.6.1'
+    compileOnly "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
+    compileOnly 'androidx.core:core-ktx:1.9.0'
+    compileOnly 'androidx.appcompat:appcompat:1.6.0'
+    compileOnly 'com.google.android.material:material:1.8.0'
     implementation "androidx.startup:startup-runtime:1.1.1"
 }
 

@@ -18,7 +18,6 @@ import com.lyni.treasure.ui.adapter.TestAdapter
 import com.lyni.treasure.utils.Log
 import com.lyni.treasure.utils.showToast
 import com.lyni.treasure.vm.model.TestItem
-import kotlinx.coroutines.delay
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,13 +48,14 @@ class MainActivity : AppCompatActivity() {
 //        setLightNavigationBar(false)
         listener.observe(this.lifecycle)
         initTestItems()
+        showToast("test")
         binding.rvTestItem.adapter = TestAdapter().apply {
             addItems(testItems)
-            setOnItemClickListener { _, _, position ->
-                removeItem(position)
-            }
             setOnItemLongClickListener { _, item, _ ->
-                showToast("${item.action}")
+                showToast(item.name)
+            }
+            setOnItemClickListener { _, item, _ ->
+                mainHandler.post(item.action)
             }
             addFooterView { _, _ ->
                 FrameLayout(this@MainActivity).apply {
@@ -63,24 +63,10 @@ class MainActivity : AppCompatActivity() {
                         text = "hello, my base rv adapter!"
                     })
                     setBackgroundColor(Color.BLUE)
-//                    layoutParams =
-//                        ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                 }
 
             }
         }
-        mainLaunch {
-            delay(5000)
-            (binding.rvTestItem.adapter as TestAdapter).removeItem(testItems[0])
-            testItems[1].name = "111"
-            (binding.rvTestItem.adapter as TestAdapter).updateItem(testItems[1])
-            (binding.rvTestItem.adapter as TestAdapter).swapItem(0, 1)
-        }
-        Log.e(TAG, "onCreate: ${"[1,2,3]".jsonToList<Int>()}")
-        "{\"goods_id\":\"140861765\",\"cat_id\":\"210\",\"goods_sn\":\"171073501\",\"goods_sn_back\":\"171073501\",\"goods_upc\":null,\"goods_name\":\"Lace-Up Boxer Swimming Trunks\"}".jsonToMap<Any>()
-            .apply {
-                Log.e(TAG, "onCreate: $this")
-            }
     }
 
     @SuppressLint("MissingPermission")
@@ -120,7 +106,11 @@ class MainActivity : AppCompatActivity() {
             })
             add(TestItem("获取网络类型") { Log.e(TAG, "获取网络类型: ${NetworkUtil.getNetworkType()}") })
             add(TestItem("获取IP地址") { Log.e(TAG, "获取IP地址: ${NetworkUtil.getIPAddress(true)}") })
-            add(TestItem("获取SSID") { Log.e(TAG, "获取SSID: ${NetworkUtil.getSSID()}") })
+            add(TestItem("获取SSID") {
+                QuickPermission.with(this@MainActivity).addPermissions(Permissions.ACCESS_FINE_LOCATION).onGranted {
+                    Log.e(TAG, "获取SSID: ${NetworkUtil.getSSID()}")
+                }.request()
+            })
             add(TestItem("获取wifi扫描结果") { Log.e(TAG, "获取wifi扫描结果: ${NetworkUtil.getWifiScanResult()}") })
         }.run {
             forEach {

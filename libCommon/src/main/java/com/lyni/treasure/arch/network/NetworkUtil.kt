@@ -11,7 +11,6 @@ import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.telephony.TelephonyManager
-import android.text.TextUtils
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import com.lyni.treasure.ktx.appContext
@@ -27,12 +26,12 @@ import java.util.*
 /**
  * @date 2022/6/30
  * @author Liangyong Ni
- * description 网络相关工具类
+ * description network util
  */
 object NetworkUtil {
 
     /**
-     * 当前是否连接网络
+     * is network connected
      * @return true or false
      */
     @RequiresPermission(value = "android.permission.ACCESS_NETWORK_STATE")
@@ -42,8 +41,7 @@ object NetworkUtil {
             val networkCapabilities: NetworkCapabilities? =
                 connectivityManager?.getNetworkCapabilities(connectivityManager.activeNetwork)
             networkCapabilities != null && hasCapabilities(
-                NetworkCapabilities.NET_CAPABILITY_INTERNET,
-                NetworkCapabilities.NET_CAPABILITY_VALIDATED
+                NetworkCapabilities.NET_CAPABILITY_INTERNET, NetworkCapabilities.NET_CAPABILITY_VALIDATED
             )
         } else {
             val networkInfo = connectivityManager?.activeNetworkInfo as NetworkInfo
@@ -52,8 +50,8 @@ object NetworkUtil {
     }
 
     /**
-     * 解析某个域名的ip地址判断DNS是否可用
-     * @param domain 域名
+     * is dns working
+     * @param domain domain
      * @return true or false
      */
     @RequiresPermission(permission.INTERNET)
@@ -69,7 +67,7 @@ object NetworkUtil {
     }
 
     /**
-     * 判断手机数据是否启用
+     * is mobile data enabled
      *
      * @return true or false
      */
@@ -89,7 +87,7 @@ object NetworkUtil {
     }
 
     /**
-     * 判断网络是否通过VPN连接
+     * is using vpn
      *
      * @return true or false
      */
@@ -97,12 +95,11 @@ object NetworkUtil {
     fun isUsingVPN(): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         hasTransports(NetworkCapabilities.TRANSPORT_VPN)
     } else {
-        val cm = getConnectivityManager()
-        cm.getNetworkInfo(ConnectivityManager.TYPE_VPN)!!.isConnectedOrConnecting
+        getConnectivityManager().getNetworkInfo(ConnectivityManager.TYPE_VPN)!!.isConnectedOrConnecting
     }
 
     /**
-     * 是否使用蜂窝网络
+     * is using cellular
      *
      * @return true or false
      */
@@ -111,22 +108,22 @@ object NetworkUtil {
         hasTransports(NetworkCapabilities.TRANSPORT_CELLULAR)
     } else {
         val info = getActiveNetworkInfo()
-        null != info && info.isAvailable && info.type == ConnectivityManager.TYPE_MOBILE
+        (info != null) && info.isAvailable && (info.type == ConnectivityManager.TYPE_MOBILE)
     }
 
     /**
-     * 是否是4G网络
+     * is 4G
      *
      * @return true or false
      */
     @RequiresPermission(permission.ACCESS_NETWORK_STATE)
     fun is4G(): Boolean {
         val info = getActiveNetworkInfo()
-        return (info != null && info.isAvailable && info.subtype == TelephonyManager.NETWORK_TYPE_LTE)
+        return (info != null) && info.isConnected && (info.subtype == TelephonyManager.NETWORK_TYPE_LTE)
     }
 
     /**
-     * 是否是5G网络
+     * is 5G, NSA will be treat as 4G
      *
      * @return true or false
      */
@@ -134,12 +131,11 @@ object NetworkUtil {
     @RequiresPermission(permission.ACCESS_NETWORK_STATE)
     fun is5G(): Boolean {
         val info = getActiveNetworkInfo()
-        return (info != null && info.isAvailable
-                && info.subtype == TelephonyManager.NETWORK_TYPE_NR)
+        return (info != null) && info.isAvailable && (info.subtype == TelephonyManager.NETWORK_TYPE_NR)
     }
 
     /**
-     * 是否启用Wifi
+     * is wifi enabled
      *
      * @return true or false
      */
@@ -147,30 +143,32 @@ object NetworkUtil {
     fun isWifiEnabled() = getWifiManager().isWifiEnabled
 
     /**
-     * 控制Wifi是否启用
+     * set wifi enabled
      *
      * @param enabled 是否启用
      */
     @RequiresPermission(permission.CHANGE_WIFI_STATE)
     fun setWifiEnabled(enabled: Boolean) {
         val manager = getWifiManager()
-        if (enabled == manager.isWifiEnabled) return
+        if (enabled == manager.isWifiEnabled) {
+            return
+        }
         manager.isWifiEnabled = enabled
     }
 
     /**
-     * 是否连接Wifi
+     * is wifi connected
      *
      * @return true or false
      */
     @RequiresPermission(permission.ACCESS_NETWORK_STATE)
     fun isWifiConnected(): Boolean {
         val ni = getConnectivityManager().activeNetworkInfo
-        return ni != null && ni.type == ConnectivityManager.TYPE_WIFI
+        return (ni != null) && (ni.type == ConnectivityManager.TYPE_WIFI)
     }
 
     /**
-     * 是否是以太网
+     * is using ethernet
      *
      * @return true or false
      */
@@ -178,11 +176,11 @@ object NetworkUtil {
     fun isEthernet(): Boolean {
         val info = getConnectivityManager().getNetworkInfo(ConnectivityManager.TYPE_ETHERNET) ?: return false
         val state = info.state ?: return false
-        return state == NetworkInfo.State.CONNECTED || state == NetworkInfo.State.CONNECTING
+        return (state == NetworkInfo.State.CONNECTED) || (state == NetworkInfo.State.CONNECTING)
     }
 
     /**
-     * 是否通过蓝牙连接网络
+     * is using bluetooth
      *
      * @return true or false
      */
@@ -191,7 +189,7 @@ object NetworkUtil {
     fun isBluetooth(): Boolean = hasTransports(NetworkCapabilities.TRANSPORT_BLUETOOTH)
 
     /**
-     * 是否通过USB连接网络
+     * is using usb
      *
      * @return true or false
      */
@@ -200,7 +198,7 @@ object NetworkUtil {
     fun isUSB(): Boolean = hasTransports(NetworkCapabilities.TRANSPORT_USB)
 
     /**
-     * 是否通过 LoWPAN 连接网络
+     * is using LoWPAN
      *
      * @return true or false
      */
@@ -209,20 +207,19 @@ object NetworkUtil {
     fun isLoWPAN(): Boolean = hasTransports(NetworkCapabilities.TRANSPORT_LOWPAN)
 
     /**
-     * 获取network operator 名称
+     * obtain the name of network operator
      *
      * @return name
      */
     fun getNetworkOperatorName(): String {
-        val tm = getAppContext()
-            .getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        val tm = getAppContext().getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         return tm.networkOperatorName
     }
 
     /**
-     * 获取网络类型
+     * obtain network type
      *
-     * @return [NetworkType] - 网络类型
+     * @return [NetworkType] - type
      */
     @RequiresPermission(permission.ACCESS_NETWORK_STATE)
     fun getNetworkType(): NetworkType {
@@ -263,10 +260,10 @@ object NetworkUtil {
     }
 
     /**
-     * 获取ip地址
+     * obtain ip address
      *
-     * @param useIPv4 是否使用IPv4
-     * @return ip地址
+     * @param useIPv4 is using ipv4
+     * @return ip address
      */
     @RequiresPermission(permission.INTERNET)
     fun getIPAddress(useIPv4: Boolean): String {
@@ -291,12 +288,8 @@ object NetworkUtil {
                     } else {
                         if (!isIPv4) {
                             val index = hostAddress.indexOf('%')
-                            return if (index < 0) hostAddress.uppercase(Locale.getDefault()) else hostAddress.substring(
-                                0,
-                                index
-                            ).uppercase(
-                                Locale.getDefault()
-                            )
+                            return if (index < 0) hostAddress.uppercase(Locale.getDefault())
+                            else hostAddress.substring(0, index).uppercase(Locale.getDefault())
                         }
                     }
                 }
@@ -308,16 +301,15 @@ object NetworkUtil {
     }
 
     /**
-     * 获取SSID
+     * obtain SSID，require ACCESS_WIFI_STATE ACCESS_NETWORK_STATE ACCESS_FINE_LOCATION
      *
      * @return SSID
      */
-    @RequiresPermission(permission.ACCESS_WIFI_STATE)
+    @RequiresPermission(allOf = [permission.ACCESS_WIFI_STATE, permission.ACCESS_NETWORK_STATE, permission.ACCESS_FINE_LOCATION])
     fun getSSID(): String {
         val wm = getAppContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val wi = wm.connectionInfo ?: return ""
-        val ssid = wi.ssid
-        if (TextUtils.isEmpty(ssid)) {
+        val ssid = wm.connectionInfo?.ssid
+        if (ssid.isNullOrEmpty()) {
             return ""
         }
         return if (ssid.length > 2 && ssid[0] == '"' && ssid[ssid.length - 1] == '"') {
@@ -326,66 +318,66 @@ object NetworkUtil {
     }
 
     /**
-     * 注册网络变化监听器
+     * register network status listener
      *
-     * @param listener [NetworkStatusListener] - 监听器
+     * @param listener [NetworkStatusListener] - listener
      */
     @RequiresPermission(permission.ACCESS_NETWORK_STATE)
     fun registerNetworkStatusListener(listener: NetworkStatusListener) {
-        NetworkChangedReceiver.instance.registerListener(listener)
+        NetworkChangedReceiver.registerListener(listener)
     }
 
     /**
-     * 判断网络变化监听器是否注册
+     * is listener registered
      *
      * @param listener [NetworkStatusListener] - 监听器
      * @return true or false
      */
     fun isRegisteredNetworkStatusListener(listener: NetworkStatusListener): Boolean {
-        return NetworkChangedReceiver.instance.isRegistered(listener)
+        return NetworkChangedReceiver.isRegistered(listener)
     }
 
     /**
-     * 注销网络变化监听器
+     * unregister network status listener
      *
-     * @param listener [NetworkStatusListener] - 监听器
+     * @param listener [NetworkStatusListener] - listener
      */
     fun unregisterNetworkStatusListener(listener: NetworkStatusListener) {
-        NetworkChangedReceiver.instance.unregisterListener(listener)
+        NetworkChangedReceiver.unregisterListener(listener)
     }
 
     /**
-     * 获取wifi扫描结果
+     * scan wifi
      *
-     * @return [ScanResult] - Wifi扫描结果
+     * @return [ScanResult] - results
      */
-    @RequiresPermission(allOf = [permission.ACCESS_WIFI_STATE, permission.ACCESS_COARSE_LOCATION])
+    @RequiresPermission(allOf = [permission.ACCESS_WIFI_STATE, permission.ACCESS_COARSE_LOCATION, permission.ACCESS_FINE_LOCATION])
     fun getWifiScanResult(): List<ScanResult> {
         if (!isWifiEnabled()) return listOf()
         return getWifiManager().scanResults ?: listOf()
     }
 
     /**
-     * 获取wifi manager
+     * obtain wifi manager instance
      *
-     * @return [WifiManager] - WifiManager对象
+     * @return [WifiManager] - WifiManager
      */
     fun getWifiManager(): WifiManager =
         getAppContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
     /**
-     * 获取connectivity manager
+     * get connectivity manager instance
      *
-     * @return [ConnectivityManager] - ConnectivityManager对象
+     * @return [ConnectivityManager] - ConnectivityManager
      */
     fun getConnectivityManager(): ConnectivityManager =
         getAppContext().applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     /**
-     * 判断满足[NetworkCapabilities.hasCapability]
+     * [NetworkCapabilities.hasCapability]
      *
-     * @param capabilities 需要判断的内容
-     * @return 是否全部存在
+     * @param capabilities capabilities
+     * @return true or false
      */
     @RequiresApi(Build.VERSION_CODES.M)
     @RequiresPermission(value = "android.permission.ACCESS_NETWORK_STATE")
@@ -406,10 +398,10 @@ object NetworkUtil {
     }
 
     /**
-     * 判断满足[NetworkCapabilities.hasTransport]
+     * [NetworkCapabilities.hasTransport]
      *
-     * @param transports 需要判断的内容
-     * @return 是否全部存在
+     * @param transports transports
+     * @return true or false
      */
     @RequiresApi(Build.VERSION_CODES.M)
     @RequiresPermission(value = "android.permission.ACCESS_NETWORK_STATE")
@@ -430,9 +422,9 @@ object NetworkUtil {
     }
 
     /**
-     * 注册网络变化回调，使用系统方式[ConnectivityManager.NetworkCallback]
+     * register [ConnectivityManager.NetworkCallback],
      *
-     * @param callback 回调
+     * @param callback cb
      */
     @RequiresApi(Build.VERSION_CODES.N)
     @RequiresPermission(value = "android.permission.ACCESS_NETWORK_STATE")
@@ -441,9 +433,9 @@ object NetworkUtil {
     }
 
     /**
-     * 注销网络变化回调，使用系统方式[ConnectivityManager.NetworkCallback]
+     * unregister [ConnectivityManager.NetworkCallback]
      *
-     * @param callback 回调
+     * @param callback cb
      */
     @RequiresApi(Build.VERSION_CODES.N)
     @RequiresPermission(value = "android.permission.ACCESS_NETWORK_STATE")

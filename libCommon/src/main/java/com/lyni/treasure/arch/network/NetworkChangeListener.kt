@@ -8,7 +8,9 @@ package com.lyni.treasure.arch.network
 interface NetworkChangeListener : NetworkStatusListener {
 
     override fun onReceiveStatus(current: NetworkType, last: NetworkType) {
-        if (current == last) return
+        if (current == last) {
+            return
+        }
         onChanged(current)
     }
 
